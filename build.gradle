@@ -21,3 +21,11 @@ allprojects {
         }
     }
 }
+
+task managedVersions {
+    doLast {
+        dependencyManagement.managedVersions.each {
+            println it
+        }
+    }
+}
