@@ -1,5 +1,7 @@
 package ru.otus.lists;
 
+import ru.otus.iterators.ArrayListIterator;
+
 import java.util.*;
 
 public class DIYArrayList<E> implements List<E> {
@@ -38,7 +40,7 @@ public class DIYArrayList<E> implements List<E> {
 
 	@Override
 	public Iterator<E> iterator() {
-		return null;
+		return new ArrayListIterator<>(this);
 	}
 
 	@Override
