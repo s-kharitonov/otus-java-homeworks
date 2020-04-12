@@ -1,6 +1,7 @@
 package ru.otus.lists;
 
-import ru.otus.iterators.ArrayListIterator;
+import ru.otus.iterators.DIYIterator;
+import ru.otus.iterators.DIYListIterator;
 
 import java.util.*;
 
@@ -25,12 +26,12 @@ public class DIYArrayList<E> implements List<E> {
 
 	@Override
 	public int size() {
-		return this.capacity;
+		return capacity;
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return this.capacity == 0;
+		return capacity == 0;
 	}
 
 	@Override
@@ -40,12 +41,12 @@ public class DIYArrayList<E> implements List<E> {
 
 	@Override
 	public Iterator<E> iterator() {
-		return new ArrayListIterator<>(this);
+		return new DIYIterator<>(this, elements.length);
 	}
 
 	@Override
 	public Object[] toArray() {
-		return Arrays.copyOf(this.elements, this.capacity);
+		return Arrays.copyOf(elements, capacity);
 	}
 
 	@Override
@@ -55,7 +56,7 @@ public class DIYArrayList<E> implements List<E> {
 
 	@Override
 	public boolean add(final E e) {
-		add(this.capacity, e);
+		add(capacity, e);
 		return true;
 	}
 
@@ -91,23 +92,23 @@ public class DIYArrayList<E> implements List<E> {
 
 	@Override
 	public void clear() {
-		Arrays.fill(this.elements, null);
-		this.capacity = 0;
+		Arrays.fill(elements, null);
+		capacity = 0;
 	}
 
 	@Override
 	public E get(final int index) {
-		Objects.checkIndex(index, this.capacity);
+		Objects.checkIndex(index, capacity);
 		return getElement(index);
 	}
 
 	@Override
 	public E set(final int index, final E element) {
-		Objects.checkIndex(index, this.capacity);
+		Objects.checkIndex(index, capacity);
 
 		final E previousElement = getElement(index);
 
-		this.elements[index] = element;
+		elements[index] = element;
 
 		return previousElement;
 	}
@@ -118,22 +119,22 @@ public class DIYArrayList<E> implements List<E> {
 			throw new IndexOutOfBoundsException();
 		}
 
-		if (index == this.elements.length) {
-			this.elements = grow();
+		if (index == elements.length) {
+			elements = grow();
 		}
 
-		this.elements[index] = element;
-		this.capacity++;
+		elements[index] = element;
+		capacity++;
 	}
 
 	@Override
 	public E remove(final int index) {
-		Objects.checkIndex(index, this.capacity);
+		Objects.checkIndex(index, capacity);
 		final E previousElement = getElement(index);
-		final int newCapacity = this.capacity - 1;
+		final int newCapacity = capacity - 1;
 
-		System.arraycopy(this.elements, index + 1, this.elements, index, newCapacity - index);
-		this.capacity = newCapacity;
+		System.arraycopy(elements, index + 1, elements, index, newCapacity - index);
+		capacity = newCapacity;
 
 		return previousElement;
 	}
@@ -150,12 +151,13 @@ public class DIYArrayList<E> implements List<E> {
 
 	@Override
 	public ListIterator<E> listIterator() {
-		throw new UnsupportedOperationException();
+		return new DIYListIterator<>(this, elements.length);
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public void sort(final Comparator<? super E> c) {
-
+		Arrays.sort((E[]) elements, 0, capacity, c);
 	}
 
 	@Override
@@ -175,14 +177,14 @@ public class DIYArrayList<E> implements List<E> {
 
 	@SuppressWarnings("unchecked")
 	private E getElement(final int index) {
-		return (E) this.elements[index];
+		return (E) elements[index];
 	}
 
 	private boolean isNotValidIndex(final int index) {
-		return index < 0 || index > this.capacity;
+		return index < 0 || index > capacity;
 	}
 
 	private Object[] grow() {
-		return Arrays.copyOf(this.elements, this.elements.length * 2);
+		return Arrays.copyOf(elements, elements.length * 2);
 	}
 }

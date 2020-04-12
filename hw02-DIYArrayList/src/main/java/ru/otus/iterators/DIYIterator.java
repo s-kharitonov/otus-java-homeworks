@@ -2,17 +2,20 @@ package ru.otus.iterators;
 
 import ru.otus.lists.DIYArrayList;
 
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
-public class ArrayListIterator<E> implements Iterator<E> {
+public class DIYIterator<E> implements Iterator<E> {
 
-	private final DIYArrayList<E> list;
-	private int cursor;
+	final DIYArrayList<E> list;
+	int cursor;
+	int capacity;
 
-	public ArrayListIterator(final DIYArrayList<E> list) {
+	public DIYIterator(final DIYArrayList<E> list, final int capacity) {
 		this.list = list;
+		this.capacity = capacity;
 	}
 
 	@Override
@@ -25,6 +28,10 @@ public class ArrayListIterator<E> implements Iterator<E> {
 
 		if (cursor >= list.size()) {
 			throw new NoSuchElementException();
+		}
+
+		if (cursor >= capacity) {
+			throw new ConcurrentModificationException();
 		}
 
 		cursor++;
