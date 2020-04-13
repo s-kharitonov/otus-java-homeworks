@@ -1,9 +1,7 @@
 package ru.otus.lists;
 
-import ru.otus.iterators.DIYIterator;
-import ru.otus.iterators.DIYListIterator;
-
 import java.util.*;
+import java.util.function.Consumer;
 
 public class DIYArrayList<E> implements List<E> {
 
@@ -186,5 +184,106 @@ public class DIYArrayList<E> implements List<E> {
 
 	private Object[] grow() {
 		return Arrays.copyOf(elements, elements.length * 2);
+	}
+
+	private static class DIYIterator<E> implements Iterator<E> {
+
+		final DIYArrayList<E> list;
+		int cursor;
+		int capacity;
+
+		public DIYIterator(final DIYArrayList<E> list, final int capacity) {
+			this.list = list;
+			this.capacity = capacity;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return cursor != list.size();
+		}
+
+		@Override
+		public E next() {
+
+			if (cursor >= list.size()) {
+				throw new NoSuchElementException();
+			}
+
+			if (cursor >= capacity) {
+				throw new ConcurrentModificationException();
+			}
+
+			cursor++;
+
+			return list.get(cursor - 1);
+		}
+
+		@Override
+		public void forEachRemaining(final Consumer<? super E> action) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+
+		}
+	}
+
+	private static class DIYListIterator<E> extends DIYIterator<E> implements ListIterator<E> {
+
+		public DIYListIterator(final DIYArrayList<E> list, final int capacity) {
+			super(list, capacity);
+		}
+
+		@Override
+		public boolean hasPrevious() {
+			return cursor != 0;
+		}
+
+		@Override
+		public E previous() {
+
+			if (cursor < 0) {
+				throw new NoSuchElementException();
+			}
+
+			if (cursor >= capacity) {
+				throw new ConcurrentModificationException();
+			}
+
+			cursor--;
+
+			return list.get(cursor + 1);
+		}
+
+		@Override
+		public int nextIndex() {
+			return cursor;
+		}
+
+		@Override
+		public int previousIndex() {
+			return cursor - 1;
+		}
+
+		@Override
+		public void set(final E e) {
+			try {
+				list.set(cursor - 1, e);
+			} catch (IndexOutOfBoundsException error) {
+				throw new ConcurrentModificationException();
+			}
+		}
+
+		@Override
+		public void add(final E e) {
+			try {
+				list.add(cursor + 1, e);
+				this.cursor++;
+			} catch (IndexOutOfBoundsException error) {
+				throw new ConcurrentModificationException();
+			}
+		}
 	}
 }
