@@ -1,5 +1,7 @@
 package ru.otus.runners;
 
+import ru.otus.exceptions.IllegalUsingAnnotationsException;
+
 public interface Runner {
-	<T> void run(final Class<T> clazz);
+	void run(final String className) throws IllegalUsingAnnotationsException;
 }
