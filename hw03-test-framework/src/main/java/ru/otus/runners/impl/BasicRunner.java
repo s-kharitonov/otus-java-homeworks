@@ -63,10 +63,10 @@ public class BasicRunner implements Runner {
 			}
 
 			passed++;
-			executed++;
 		} catch (Exception e) {
 			e.printStackTrace();
 			failed++;
+		} finally {
 			executed++;
 		}
 	}
