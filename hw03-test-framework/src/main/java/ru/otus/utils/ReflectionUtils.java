@@ -13,9 +13,11 @@ public class ReflectionUtils {
 		return Arrays.stream(methods).filter(predicate).toArray(Method[]::new);
 	}
 
-	public static Method getFirstMethod(final Method[] methods) {
+	public static Method getMethodByAnnotation(final Method[] methods, final Class<? extends Annotation> annotation) {
+		final Method[] filteredMethods = filterMethodsByAnnotation(methods, annotation);
+
 		try {
-			return methods[0];
+			return filteredMethods[0];
 		} catch (ArrayIndexOutOfBoundsException e) {
 			return null;
 		}

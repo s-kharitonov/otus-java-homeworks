@@ -4,7 +4,6 @@ import ru.otus.annotations.After;
 import ru.otus.annotations.Before;
 import ru.otus.annotations.Test;
 import ru.otus.domain.Constants;
-import ru.otus.exceptions.IllegalUsingAnnotationsException;
 import ru.otus.runners.Runner;
 import ru.otus.utils.ReflectionUtils;
 
@@ -18,25 +17,12 @@ public class BasicRunner implements Runner {
 	private int failed;
 
 	@Override
-	public void run(final String className) throws IllegalUsingAnnotationsException {
+	public void run(final String className) {
 		final Class<?> clazz = getClassForName(className);
 		final Method[] methods = Objects.requireNonNull(clazz).getMethods();
-		final Method[] beforeMethods = ReflectionUtils.filterMethodsByAnnotation(methods, Before.class);
-		final Method[] afterMethods = ReflectionUtils.filterMethodsByAnnotation(methods, After.class);
 		final Method[] testMethods = ReflectionUtils.filterMethodsByAnnotation(methods, Test.class);
-
-		if (beforeMethods.length > 1) {
-			final String errorMsg = String.format(Constants.ILLEGAL_USING_ANNOTATION, Before.class.getCanonicalName());
-			throw new IllegalUsingAnnotationsException(errorMsg);
-		}
-
-		if (afterMethods.length > 1) {
-			final String errorMsg = String.format(Constants.ILLEGAL_USING_ANNOTATION, After.class.getCanonicalName());
-			throw new IllegalUsingAnnotationsException(errorMsg);
-		}
-
-		final Method beforeMethod = ReflectionUtils.getFirstMethod(beforeMethods);
-		final Method afterMethod = ReflectionUtils.getFirstMethod(afterMethods);
+		final Method beforeMethod = ReflectionUtils.getMethodByAnnotation(methods, Before.class);
+		final Method afterMethod = ReflectionUtils.getMethodByAnnotation(methods, After.class);
 
 		for (Method testMethod : testMethods) {
 			executeTest(clazz, beforeMethod, afterMethod, testMethod);
