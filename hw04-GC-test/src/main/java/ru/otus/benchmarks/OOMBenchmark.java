@@ -19,7 +19,7 @@ public class OOMBenchmark {
 				numbers.add(String.valueOf(j));
 			}
 
-			growSize *= 1.015;
+			growSize *= 1.012;
 		}
 	}
 }
