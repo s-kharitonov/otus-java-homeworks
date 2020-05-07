@@ -15,4 +15,7 @@ public class ReflectionUtils {
 		return Arrays.stream(methods).filter(predicate).collect(Collectors.toSet());
 	}
 
+	public static String extractNameAndParams(final Method method) {
+		return method.getName() + Arrays.toString(method.getParameters());
+	}
 }
