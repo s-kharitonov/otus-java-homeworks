@@ -17,8 +17,9 @@ public abstract class IOC {
 	private static final Set<String> methodsForLogging = new HashSet<>();
 
 	@SuppressWarnings("unchecked")
-	public static <T> T getInstance(final T obj, final Class<T> implInterface) {
-		final Method[] methods = obj.getClass().getMethods();
+	public static <T> T getInstance(final T obj) {
+		final Class<?> clazz = obj.getClass();
+		final Method[] methods = clazz.getMethods();
 		final Set<Method> annotatedMethods = ReflectionUtils.filterMethodsByAnnotation(methods, Log.class);
 
 		if (annotatedMethods.isEmpty()) {
@@ -29,7 +30,7 @@ public abstract class IOC {
 
 		methodsForLogging.addAll(namesAndParams);
 
-		return (T) Proxy.newProxyInstance(IOC.class.getClassLoader(), new Class<?>[]{implInterface}, new LogInvocationHandler<>(obj));
+		return (T) Proxy.newProxyInstance(IOC.class.getClassLoader(), clazz.getInterfaces(), new LogInvocationHandler<>(obj));
 	}
 
 	private static <T> void printMethodInfo(final T instance, final Method method, final Object[] args) throws Exception {
