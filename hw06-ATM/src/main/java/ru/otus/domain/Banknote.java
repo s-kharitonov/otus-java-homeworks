@@ -10,4 +10,11 @@ public class Banknote {
 	public int getValue() {
 		return value;
 	}
+
+	@Override
+	public String toString() {
+		return "Banknote{" +
+				"value=" + value +
+				'}';
+	}
 }

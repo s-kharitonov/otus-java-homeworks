@@ -20,7 +20,7 @@ public class BasicAtm implements Atm {
 
 	@Override
 	public int calculateBalance() {
-		return Objects.requireNonNull(balance).values().stream()
+		return balance.values().stream()
 				.map(Cell::getBanknotes)
 				.flatMap(Collection::stream)
 				.mapToInt(Banknote::getValue)
@@ -28,8 +28,26 @@ public class BasicAtm implements Atm {
 	}
 
 	@Override
-	public List<Banknote> debitFromBalance(final int value) {
-		return null;
+	public List<Banknote> debitFromBalance(final int value) throws AtmModificationException {
+		if (value <= 0) {
+			throw new AtmModificationException("not valid value. Value must be more 0");
+		}
+
+		final int balance = calculateBalance();
+
+		if (value > balance) {
+			throw new AtmModificationException("not enough money");
+		}
+
+		final boolean isValidValue = value % MonetaryValue.FIFTY.getValue() == 0;
+
+		if (!isValidValue) {
+			throw new AtmModificationException("value must be a multiple of 50");
+		}
+
+		final List<Banknote> banknotes = new ArrayList<>();
+
+		return banknotes;
 	}
 
 	@Override
@@ -55,7 +73,7 @@ public class BasicAtm implements Atm {
 
 		final Cell cell = this.balance.get(foundMonetaryValue);
 
-		Objects.requireNonNull(cell.getBanknotes()).add(banknote);
+		cell.getBanknotes().add(banknote);
 
 		return calculateBalance();
 	}
