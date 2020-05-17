@@ -3,6 +3,7 @@ package ru.otus;
 import ru.otus.atms.Atm;
 import ru.otus.dao.AtmDAO;
 import ru.otus.dao.impl.BasicAtmDAO;
+import ru.otus.domain.Banknote;
 
 public class Main {
 
@@ -12,5 +13,6 @@ public class Main {
 		final Atm atm = atmDAO.initAtm();
 
 		System.out.println("balance: " + atm.calculateBalance());
+		System.out.println("balance: " + atm.putOnBalance(new Banknote(5000)));
 	}
 }

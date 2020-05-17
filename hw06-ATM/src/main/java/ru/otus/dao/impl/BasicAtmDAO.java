@@ -1,5 +1,6 @@
 package ru.otus.dao.impl;
 
+import com.google.common.collect.Lists;
 import ru.otus.atms.Atm;
 import ru.otus.atms.impl.BasicAtm;
 import ru.otus.dao.AtmDAO;
@@ -18,7 +19,8 @@ public class BasicAtmDAO implements AtmDAO {
 
 		for (MonetaryValue monetaryValue : MonetaryValue.values()) {
 			final int value = monetaryValue.getValue();
-			final List<Banknote> banknotes = List.of(new Banknote(value), new Banknote(value), new Banknote(value), new Banknote(value), new Banknote(value));
+			final List<Banknote> banknotes = Lists.newArrayList(new Banknote(value), new Banknote(value), new Banknote(value), new Banknote(value), new Banknote(value));
+
 			final Cell cell = new Cell(banknotes);
 
 			balance.put(monetaryValue, cell);
