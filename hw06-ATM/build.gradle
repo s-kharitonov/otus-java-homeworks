@@ -10,7 +10,7 @@ dependencies {
 }
 
 shadowJar {
-    archiveBaseName.set('hwOtus05')
+    archiveBaseName.set('hwOtus06')
     archiveVersion.set('0.1')
     manifest {
         attributes 'Main-Class': 'ru.otus.Main'
