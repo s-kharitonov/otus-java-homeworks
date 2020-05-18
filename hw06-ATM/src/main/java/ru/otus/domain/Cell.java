@@ -12,4 +12,11 @@ public class Cell {
 	public List<Banknote> getBanknotes() {
 		return banknotes;
 	}
+
+	@Override
+	public String toString() {
+		return "Cell{" +
+				"banknotes=" + banknotes +
+				'}';
+	}
 }

@@ -8,14 +8,15 @@ import ru.otus.domain.Banknote;
 import ru.otus.domain.Cell;
 import ru.otus.domain.MonetaryValue;
 
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class BasicAtmDAO implements AtmDAO {
 	@Override
 	public Atm initAtm() {
-		final Map<MonetaryValue, Cell> balance = new HashMap<>();
+		final Map<MonetaryValue, Cell> balance = new TreeMap<>(Comparator.reverseOrder());
 
 		for (MonetaryValue monetaryValue : MonetaryValue.values()) {
 			final int value = monetaryValue.getValue();

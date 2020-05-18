@@ -45,9 +45,28 @@ public class BasicAtm implements Atm {
 			throw new AtmModificationException("value must be a multiple of 50");
 		}
 
-		final List<Banknote> banknotes = new ArrayList<>();
+		final List<Banknote> debitedBanknotes = new ArrayList<>();
+		int difference = value;
 
-		return banknotes;
+		for (Map.Entry<MonetaryValue, Cell> entry : this.balance.entrySet()) {
+			final Iterator<Banknote> iterator = entry.getValue().getBanknotes().iterator();
+			final int monetaryValue = entry.getKey().getValue();
+			final boolean isValidDifference = difference >= monetaryValue;
+
+			if (!isValidDifference) {
+				continue;
+			}
+
+			while (iterator.hasNext() && difference > 0) {
+				final Banknote banknote = iterator.next();
+
+				debitedBanknotes.add(banknote);
+				iterator.remove();
+				difference -= monetaryValue;
+			}
+		}
+
+		return debitedBanknotes;
 	}
 
 	@Override
