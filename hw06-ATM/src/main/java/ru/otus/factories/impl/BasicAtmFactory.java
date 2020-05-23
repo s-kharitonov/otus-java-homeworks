@@ -1,19 +1,19 @@
-package ru.otus.dao.impl;
+package ru.otus.factories.impl;
 
 import com.google.common.collect.Lists;
 import ru.otus.atms.Atm;
 import ru.otus.atms.impl.BasicAtm;
-import ru.otus.dao.AtmDAO;
 import ru.otus.domain.Banknote;
 import ru.otus.domain.Cell;
 import ru.otus.domain.MonetaryValue;
+import ru.otus.factories.AtmFactory;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class BasicAtmDAO implements AtmDAO {
+public class BasicAtmFactory implements AtmFactory {
 	@Override
 	public Atm initAtm() {
 		final Map<MonetaryValue, Cell> balance = new TreeMap<>(Comparator.reverseOrder());
