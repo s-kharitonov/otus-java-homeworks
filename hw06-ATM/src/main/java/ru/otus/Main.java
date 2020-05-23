@@ -14,8 +14,8 @@ public class Main {
 		final Atm atm = atmFactory.initAtm();
 
 		System.out.println("balance: " + atm.calculateBalance());
-		System.out.println("balance: " + atm.putOnBalance(new Banknote(5000)));
-		System.out.println("balance: " + atm.debitFromBalance(50));
+		System.out.println("balance: " + atm.putOnBalance(Banknote.FIVE_THOUSAND));
+		System.out.println("balance: " + atm.debitFromBalance(150));
 		System.out.println("balance: " + atm.calculateBalance());
 	}
 }
