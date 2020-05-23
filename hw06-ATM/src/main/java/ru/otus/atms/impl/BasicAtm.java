@@ -1,8 +1,8 @@
 package ru.otus.atms.impl;
 
 import ru.otus.atms.Atm;
+import ru.otus.cells.Cell;
 import ru.otus.domain.Banknote;
-import ru.otus.domain.cells.Cell;
 import ru.otus.exceptions.AtmModificationException;
 import ru.otus.utils.CollectionUtils;
 

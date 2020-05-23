@@ -1,7 +1,7 @@
-package ru.otus.domain.cells.impl;
+package ru.otus.cells.impl;
 
+import ru.otus.cells.Cell;
 import ru.otus.domain.Banknote;
-import ru.otus.domain.cells.Cell;
 
 import java.util.List;
 import java.util.NoSuchElementException;

@@ -1,4 +1,4 @@
-package ru.otus.domain.cells;
+package ru.otus.cells;
 
 import ru.otus.domain.Banknote;
 

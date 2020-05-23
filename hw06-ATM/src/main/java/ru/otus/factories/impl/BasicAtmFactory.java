@@ -1,12 +1,12 @@
-package ru.otus.domain.factories.impl;
+package ru.otus.factories.impl;
 
 import com.google.common.collect.Lists;
 import ru.otus.atms.Atm;
 import ru.otus.atms.impl.BasicAtm;
+import ru.otus.cells.Cell;
+import ru.otus.cells.impl.BasicCell;
 import ru.otus.domain.Banknote;
-import ru.otus.domain.cells.Cell;
-import ru.otus.domain.cells.impl.BasicCell;
-import ru.otus.domain.factories.AtmFactory;
+import ru.otus.factories.AtmFactory;
 
 import java.util.Comparator;
 import java.util.List;

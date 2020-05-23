@@ -2,9 +2,9 @@ package ru.otus;
 
 import ru.otus.atms.Atm;
 import ru.otus.domain.Banknote;
-import ru.otus.domain.factories.AtmFactory;
-import ru.otus.domain.factories.impl.BasicAtmFactory;
 import ru.otus.exceptions.AtmModificationException;
+import ru.otus.factories.AtmFactory;
+import ru.otus.factories.impl.BasicAtmFactory;
 
 public class Main {
 
