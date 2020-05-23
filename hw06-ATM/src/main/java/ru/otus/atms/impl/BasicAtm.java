@@ -54,7 +54,7 @@ public class BasicAtm implements Atm {
 				continue;
 			}
 
-			while (difference > 0 && cell.size() > 0) {
+			while (Math.abs(difference / monetaryValue) > 0 && difference > 0 && cell.size() > 0) {
 				final Banknote banknote = cell.getBanknote();
 
 				debitedBanknotes.add(banknote);

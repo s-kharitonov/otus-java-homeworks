@@ -15,7 +15,7 @@ public class Main {
 
 		System.out.println("balance: " + atm.calculateBalance());
 		System.out.println("balance: " + atm.putOnBalance(Banknote.FIVE_THOUSAND));
-		System.out.println("balance: " + atm.debitFromBalance(50));
+		System.out.println("balance: " + atm.debitFromBalance(4500));
 		System.out.println("balance: " + atm.calculateBalance());
 	}
 }
