@@ -2,7 +2,7 @@ package ru.otus.atms.impl;
 
 import ru.otus.atms.Atm;
 import ru.otus.domain.Banknote;
-import ru.otus.domain.Cell;
+import ru.otus.domain.cells.Cell;
 import ru.otus.exceptions.AtmModificationException;
 import ru.otus.utils.CollectionUtils;
 
@@ -20,9 +20,7 @@ public class BasicAtm implements Atm {
 	@Override
 	public int calculateBalance() {
 		return balance.values().stream()
-				.map(Cell::getBanknotes)
-				.flatMap(Collection::stream)
-				.mapToInt(Banknote::getValue)
+				.mapToInt(Cell::calculateBalance)
 				.sum();
 	}
 
@@ -48,19 +46,18 @@ public class BasicAtm implements Atm {
 		int difference = value;
 
 		for (Map.Entry<Banknote, Cell> entry : this.balance.entrySet()) {
-			final Iterator<Banknote> iterator = entry.getValue().getBanknotes().iterator();
 			final int monetaryValue = entry.getKey().getValue();
+			final Cell cell = entry.getValue();
 			final boolean isValidDifference = difference >= monetaryValue;
 
 			if (!isValidDifference) {
 				continue;
 			}
 
-			while (iterator.hasNext() && difference > 0) {
-				final Banknote banknote = iterator.next();
+			while (difference > 0 && cell.size() > 0) {
+				final Banknote banknote = cell.getBanknote();
 
 				debitedBanknotes.add(banknote);
-				iterator.remove();
 				difference -= monetaryValue;
 			}
 		}
@@ -91,7 +88,7 @@ public class BasicAtm implements Atm {
 
 		final Cell cell = this.balance.get(foundBanknote);
 
-		cell.getBanknotes().add(banknote);
+		cell.addBanknote(banknote);
 
 		return calculateBalance();
 	}

@@ -1,4 +1,4 @@
-package ru.otus.factories;
+package ru.otus.domain.factories;
 
 import ru.otus.atms.Atm;
 

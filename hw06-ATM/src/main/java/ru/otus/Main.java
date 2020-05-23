@@ -2,9 +2,9 @@ package ru.otus;
 
 import ru.otus.atms.Atm;
 import ru.otus.domain.Banknote;
+import ru.otus.domain.factories.AtmFactory;
+import ru.otus.domain.factories.impl.BasicAtmFactory;
 import ru.otus.exceptions.AtmModificationException;
-import ru.otus.factories.AtmFactory;
-import ru.otus.factories.impl.BasicAtmFactory;
 
 public class Main {
 
@@ -15,7 +15,7 @@ public class Main {
 
 		System.out.println("balance: " + atm.calculateBalance());
 		System.out.println("balance: " + atm.putOnBalance(Banknote.FIVE_THOUSAND));
-		System.out.println("balance: " + atm.debitFromBalance(150));
+		System.out.println("balance: " + atm.debitFromBalance(50));
 		System.out.println("balance: " + atm.calculateBalance());
 	}
 }
