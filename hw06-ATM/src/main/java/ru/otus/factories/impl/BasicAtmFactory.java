@@ -21,7 +21,7 @@ public class BasicAtmFactory implements AtmFactory {
 		for (Banknote banknote : Banknote.values()) {
 			final List<Banknote> banknotes = Lists.newArrayList(banknote, banknote, banknote, banknote, banknote);
 
-			final BasicCell cell = new BasicCell(banknotes);
+			final BasicCell cell = new BasicCell(banknotes, banknote.getValue());
 
 			balance.put(banknote, cell);
 		}

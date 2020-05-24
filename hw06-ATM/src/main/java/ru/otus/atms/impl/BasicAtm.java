@@ -4,10 +4,11 @@ import ru.otus.atms.Atm;
 import ru.otus.cells.Cell;
 import ru.otus.domain.Banknote;
 import ru.otus.exceptions.AtmModificationException;
-import ru.otus.utils.CollectionUtils;
 
-import java.util.*;
-import java.util.function.Predicate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class BasicAtm implements Atm {
 
@@ -79,16 +80,17 @@ public class BasicAtm implements Atm {
 			throw new AtmModificationException("banknote has not valid value. Value must be more 0");
 		}
 
-		final Predicate<Banknote> predicate = (monetaryValue) -> monetaryValue.getValue() == value;
-		final Banknote foundBanknote = CollectionUtils.findValue(Arrays.asList(Banknote.values()), predicate);
+		final Cell cell = this.balance.get(banknote);
 
-		if (Objects.isNull(foundBanknote)) {
-			throw new AtmModificationException("unknown banknote");
+		if (Objects.isNull(cell)) {
+			throw new AtmModificationException("cell not found");
 		}
 
-		final Cell cell = this.balance.get(foundBanknote);
-
-		cell.addBanknote(banknote);
+		try {
+			cell.addBanknote(banknote);
+		} catch (IllegalArgumentException e) {
+			throw new AtmModificationException(e.getMessage());
+		}
 
 		return calculateBalance();
 	}

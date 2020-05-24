@@ -5,12 +5,15 @@ import ru.otus.domain.Banknote;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class BasicCell implements Cell {
 	private final List<Banknote> banknotes;
+	private final int nominal;
 
-	public BasicCell(final List<Banknote> banknotes) {
+	public BasicCell(final List<Banknote> banknotes, final int nominal) {
 		this.banknotes = banknotes;
+		this.nominal = nominal;
 	}
 
 	@Override
@@ -19,15 +22,25 @@ public class BasicCell implements Cell {
 			throw new NoSuchElementException();
 		}
 
-		final Banknote banknote = banknotes.get(0);
+		final int indexLastElement = banknotes.size() - 1;
+		final Banknote banknote = banknotes.get(indexLastElement);
 
-		banknotes.remove(0);
+		banknotes.remove(indexLastElement);
 
 		return banknote;
 	}
 
 	@Override
-	public void addBanknote(final Banknote banknote) {
+	public void addBanknote(final Banknote banknote) throws IllegalArgumentException {
+
+		if (Objects.isNull(banknote)) {
+			throw new IllegalArgumentException("banknote is null");
+		}
+
+		if (banknote.getValue() != nominal) {
+			throw new IllegalArgumentException("illegal nominal");
+		}
+
 		banknotes.add(banknote);
 	}
 

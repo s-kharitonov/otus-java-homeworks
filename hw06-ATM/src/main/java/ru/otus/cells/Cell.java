@@ -7,7 +7,7 @@ import java.util.NoSuchElementException;
 public interface Cell {
 	Banknote getBanknote() throws NoSuchElementException;
 
-	void addBanknote(final Banknote banknote);
+	void addBanknote(final Banknote banknote) throws IllegalArgumentException;
 
 	int calculateBalance();
 
