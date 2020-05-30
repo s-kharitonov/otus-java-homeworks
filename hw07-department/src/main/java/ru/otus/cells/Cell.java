@@ -12,4 +12,6 @@ public interface Cell {
 	int calculateBalance();
 
 	int size();
+
+	void reset();
 }

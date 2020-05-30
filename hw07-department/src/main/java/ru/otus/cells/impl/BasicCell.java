@@ -3,17 +3,21 @@ package ru.otus.cells.impl;
 import ru.otus.cells.Cell;
 import ru.otus.domain.Banknote;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class BasicCell implements Cell {
-	private final List<Banknote> banknotes;
-	private final int nominal;
+	private List<Banknote> banknotes;
+	private int nominal;
+	private final Snapshot snapshot;
 
 	public BasicCell(final List<Banknote> banknotes, final int nominal) {
 		this.banknotes = banknotes;
 		this.nominal = nominal;
+		this.snapshot = new Snapshot(banknotes, nominal);
 	}
 
 	@Override
@@ -57,9 +61,31 @@ public class BasicCell implements Cell {
 	}
 
 	@Override
+	public void reset() {
+		this.nominal = snapshot.nominal;
+		this.banknotes = new ArrayList<>(snapshot.banknotes);
+	}
+
+	@Override
 	public String toString() {
 		return "BasicCell{" +
 				"banknotes=" + banknotes +
 				'}';
+	}
+
+	private static class Snapshot {
+		private final List<Banknote> banknotes;
+		private final int nominal;
+
+		private Snapshot(final List<Banknote> banknotes, final int nominal) {
+			this.banknotes = copyBanknotes(banknotes);
+			this.nominal = nominal;
+		}
+
+		private List<Banknote> copyBanknotes(final List<Banknote> banknotes) {
+			return banknotes.stream()
+					.map((banknote) -> Banknote.valueOf(banknote.name()))
+					.collect(Collectors.toList());
+		}
 	}
 }

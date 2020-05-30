@@ -5,17 +5,16 @@ import ru.otus.cells.Cell;
 import ru.otus.domain.Banknote;
 import ru.otus.exceptions.AtmModificationException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class BasicAtm implements Atm {
 
-	private final Map<Banknote, Cell> balance;
+	private TreeMap<Banknote, Cell> balance;
+	private final Snapshot snapshot;
 
-	public BasicAtm(final Map<Banknote, Cell> balance) {
+	public BasicAtm(final TreeMap<Banknote, Cell> balance) {
 		this.balance = balance;
+		this.snapshot = new Snapshot(balance);
 	}
 
 	@Override
@@ -93,5 +92,30 @@ public class BasicAtm implements Atm {
 		}
 
 		return calculateBalance();
+	}
+
+	@Override
+	public void restart() {
+		final TreeMap<Banknote, Cell> balance = snapshot.balance;
+
+		balance.values().forEach(Cell::reset);
+
+		this.balance = copyBalance(balance);
+	}
+
+	private TreeMap<Banknote, Cell> copyBalance(final Map<Banknote, Cell> balance) {
+		final TreeMap<Banknote, Cell> copiedBalance = new TreeMap<>(Comparator.reverseOrder());
+
+		copiedBalance.putAll(balance);
+
+		return copiedBalance;
+	}
+
+	private class Snapshot {
+		private final TreeMap<Banknote, Cell> balance;
+
+		private Snapshot(final TreeMap<Banknote, Cell> balance) {
+			this.balance = copyBalance(balance);
+		}
 	}
 }

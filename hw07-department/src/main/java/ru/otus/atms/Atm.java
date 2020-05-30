@@ -11,4 +11,6 @@ public interface Atm {
 	List<Banknote> debitFromBalance(final int value) throws AtmModificationException;
 
 	int putOnBalance(final Banknote banknote) throws AtmModificationException;
+
+	void restart();
 }
