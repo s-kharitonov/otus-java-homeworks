@@ -103,7 +103,7 @@ public class BasicAtm implements Atm {
 		this.balance = copyBalance(balance);
 	}
 
-	private TreeMap<Banknote, Cell> copyBalance(final Map<Banknote, Cell> balance) {
+	private static TreeMap<Banknote, Cell> copyBalance(final Map<Banknote, Cell> balance) {
 		final TreeMap<Banknote, Cell> copiedBalance = new TreeMap<>(Comparator.reverseOrder());
 
 		copiedBalance.putAll(balance);
@@ -111,7 +111,7 @@ public class BasicAtm implements Atm {
 		return copiedBalance;
 	}
 
-	private class Snapshot {
+	private static class Snapshot {
 		private final TreeMap<Banknote, Cell> balance;
 
 		private Snapshot(final TreeMap<Banknote, Cell> balance) {
