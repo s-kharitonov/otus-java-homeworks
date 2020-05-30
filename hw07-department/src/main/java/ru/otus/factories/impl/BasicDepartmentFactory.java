@@ -8,6 +8,7 @@ import ru.otus.factories.AtmFactory;
 import ru.otus.factories.DepartmentFactory;
 import ru.otus.observers.EventManager;
 import ru.otus.observers.impl.DepartmentEventManager;
+import ru.otus.observers.impl.RestartAtmListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,11 @@ public class BasicDepartmentFactory implements DepartmentFactory {
 		final EventManager eventManager = new DepartmentEventManager(Constants.RESTART_ATM_EVENT);
 
 		for (int i = 0; i < 5; i++) {
-			atms.add(atmFactory.initAtm());
+			final Atm atm = atmFactory.initAtm();
+
+			eventManager.subscribe(Constants.RESTART_ATM_EVENT, new RestartAtmListener(atm));
+
+			atms.add(atm);
 		}
 
 		return new BasicDepartment(atms, eventManager);
