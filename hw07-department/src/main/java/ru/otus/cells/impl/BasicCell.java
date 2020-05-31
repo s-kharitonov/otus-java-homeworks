@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class BasicCell implements Cell {
 	private List<Banknote> banknotes;
@@ -78,14 +77,8 @@ public class BasicCell implements Cell {
 		private final int nominal;
 
 		private Snapshot(final List<Banknote> banknotes, final int nominal) {
-			this.banknotes = copyBanknotes(banknotes);
+			this.banknotes = new ArrayList<>(banknotes);
 			this.nominal = nominal;
-		}
-
-		private List<Banknote> copyBanknotes(final List<Banknote> banknotes) {
-			return banknotes.stream()
-					.map((banknote) -> Banknote.valueOf(banknote.name()))
-					.collect(Collectors.toList());
 		}
 	}
 }
