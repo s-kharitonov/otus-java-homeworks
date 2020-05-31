@@ -72,13 +72,6 @@ public class BasicAtm implements Atm {
 			throw new AtmModificationException("banknote is null");
 		}
 
-		final int value = banknote.getValue();
-		final boolean isValidValue = value > 0;
-
-		if (!isValidValue) {
-			throw new AtmModificationException("banknote has not valid value. Value must be more 0");
-		}
-
 		final Cell cell = this.balance.get(banknote);
 
 		if (Objects.isNull(cell)) {
