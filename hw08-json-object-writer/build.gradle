@@ -8,6 +8,8 @@ targetCompatibility = JavaVersion.VERSION_13
 
 dependencies {
     implementation 'com.google.code.gson:gson'
+    implementation 'javax.json:javax.json-api'
+    implementation 'org.glassfish:javax.json'
 }
 
 shadowJar {
