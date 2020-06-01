@@ -10,6 +10,10 @@ dependencies {
     implementation 'com.google.code.gson:gson'
     implementation 'javax.json:javax.json-api'
     implementation 'org.glassfish:javax.json'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params'
+    testImplementation group: 'org.assertj', name: 'assertj-core'
+    testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter'
 }
 
 shadowJar {
