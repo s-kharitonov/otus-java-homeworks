@@ -9,11 +9,11 @@ import java.util.*;
 
 public class BasicAtm implements Atm {
 
-	private TreeMap<Banknote, Cell> balance;
+	private Map<Banknote, Cell> balance;
 	private final Snapshot snapshot;
 
-	public BasicAtm(final TreeMap<Banknote, Cell> balance) {
-		this.balance = balance;
+	public BasicAtm(final Map<Banknote, Cell> balance) {
+		this.balance = copyBalance(balance);
 		this.snapshot = new Snapshot(balance);
 	}
 
@@ -89,15 +89,15 @@ public class BasicAtm implements Atm {
 
 	@Override
 	public void restart() {
-		final TreeMap<Banknote, Cell> balance = snapshot.balance;
+		final Map<Banknote, Cell> balance = snapshot.balance;
 
 		balance.values().forEach(Cell::reset);
 
 		this.balance = copyBalance(balance);
 	}
 
-	private static TreeMap<Banknote, Cell> copyBalance(final Map<Banknote, Cell> balance) {
-		final TreeMap<Banknote, Cell> copiedBalance = new TreeMap<>(Comparator.reverseOrder());
+	private static Map<Banknote, Cell> copyBalance(final Map<Banknote, Cell> balance) {
+		final Map<Banknote, Cell> copiedBalance = new TreeMap<>(Comparator.reverseOrder());
 
 		copiedBalance.putAll(balance);
 
@@ -105,9 +105,9 @@ public class BasicAtm implements Atm {
 	}
 
 	private static class Snapshot {
-		private final TreeMap<Banknote, Cell> balance;
+		private final Map<Banknote, Cell> balance;
 
-		private Snapshot(final TreeMap<Banknote, Cell> balance) {
+		private Snapshot(final Map<Banknote, Cell> balance) {
 			this.balance = copyBalance(balance);
 		}
 	}
