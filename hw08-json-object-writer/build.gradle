@@ -16,6 +16,13 @@ dependencies {
     testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter'
 }
 
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
 shadowJar {
     archiveBaseName.set('hwOtus08')
     archiveVersion.set('0.1')
