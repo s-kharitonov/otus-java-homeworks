@@ -3,7 +3,10 @@ package ru.otus.observers.impl;
 import ru.otus.observers.EventListener;
 import ru.otus.observers.EventManager;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DepartmentEventManager implements EventManager {
 
@@ -19,20 +22,20 @@ public class DepartmentEventManager implements EventManager {
 	public void subscribe(final String eventName, final EventListener listener) {
 		final List<EventListener> listeners = this.listeners.get(eventName);
 
-		Objects.requireNonNull(listeners).add(listener);
+		listeners.add(listener);
 	}
 
 	@Override
 	public void unsubscribe(final String eventName, final EventListener listener) {
 		final List<EventListener> listeners = this.listeners.get(eventName);
 
-		Objects.requireNonNull(listeners).remove(listener);
+		listeners.remove(listener);
 	}
 
 	@Override
 	public void notify(final String eventName) {
 		final List<EventListener> listeners = this.listeners.get(eventName);
 
-		Objects.requireNonNull(listeners).forEach(EventListener::execute);
+		listeners.forEach(EventListener::execute);
 	}
 }
