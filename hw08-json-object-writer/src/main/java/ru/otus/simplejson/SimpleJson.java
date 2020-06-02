@@ -1,7 +1,6 @@
 package ru.otus.simplejson;
 
-import ru.otus.adapters.TypeAdapter;
-import ru.otus.factories.impl.BasicTypeAdapterFactory;
+import ru.otus.factories.impl.BasicJsonValueFactory;
 
 import javax.json.Json;
 import javax.json.JsonValue;
@@ -9,21 +8,20 @@ import javax.json.JsonValue;
 public class SimpleJson {
 
 	public String toJson(final Object obj) {
-		final TypeAdapter adapter = new BasicTypeAdapterFactory().getTypeAdapter(obj);
-		final JsonValue value = adapter.getJsonValue();
+		final JsonValue jsonValue = new BasicJsonValueFactory(obj).getJsonValue();
 
-		if (JsonValue.ValueType.ARRAY.equals(value.getValueType())) {
-			return Json.createArrayBuilder(value.asJsonArray())
+		if (JsonValue.ValueType.ARRAY.equals(jsonValue.getValueType())) {
+			return Json.createArrayBuilder(jsonValue.asJsonArray())
 					.build()
 					.toString();
 		}
 
-		if (JsonValue.ValueType.OBJECT.equals(value.getValueType())) {
-			return Json.createObjectBuilder(value.asJsonObject())
+		if (JsonValue.ValueType.OBJECT.equals(jsonValue.getValueType())) {
+			return Json.createObjectBuilder(jsonValue.asJsonObject())
 					.build()
 					.toString();
 		}
 
-		return value.toString();
+		return jsonValue.toString();
 	}
 }
