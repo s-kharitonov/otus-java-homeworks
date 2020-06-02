@@ -17,7 +17,7 @@ public class ArrayTypeAdapter implements TypeAdapter {
 	}
 
 	@Override
-	public javax.json.JsonValue getJsonValue() {
+	public JsonValue getJsonValue() {
 
 		if (array.length == 0) {
 			return JsonValue.EMPTY_JSON_ARRAY;
