@@ -11,7 +11,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class SimpleTypeAdapterTest {
 
@@ -24,13 +25,13 @@ class SimpleTypeAdapterTest {
 
 	@ParameterizedTest
 	@ValueSource(strings = {"Hello", "World", "!", ""})
-	void getJsonValueString(final String simpleString) {
-		final String simpleJsonValue = new SimpleTypeAdapter(simpleString)
+	void getJsonValueString(final String value) {
+		final String simpleJsonValue = new SimpleTypeAdapter(value)
 				.getJsonValue()
 				.toString();
 		final String result = gson.fromJson(simpleJsonValue, String.class);
 
-		assertTrue(simpleString.equalsIgnoreCase(result));
+		assertEquals(result, value);
 	}
 
 	@ParameterizedTest

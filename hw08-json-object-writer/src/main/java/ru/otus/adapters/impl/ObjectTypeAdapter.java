@@ -22,8 +22,9 @@ public class ObjectTypeAdapter implements TypeAdapter {
 	public JsonValue getJsonValue() {
 		final Class<?> clazz = obj.getClass();
 		final JsonObjectBuilder builder = Json.createObjectBuilder();
+		final Field[] fields = clazz.getDeclaredFields();
 
-		for (Field field : clazz.getDeclaredFields()) {
+		for (Field field : fields) {
 			try {
 
 				final int modifiers = field.getModifiers();

@@ -1,5 +1,6 @@
 package ru.otus.factories.impl;
 
+import com.google.gson.internal.Primitives;
 import ru.otus.adapters.impl.ArrayTypeAdapter;
 import ru.otus.adapters.impl.CollectionTypeAdapter;
 import ru.otus.adapters.impl.ObjectTypeAdapter;
@@ -28,10 +29,10 @@ public class BasicJsonValueFactory implements JsonValueFactory {
 		final Class<?> clazz = obj.getClass();
 
 		if (clazz.isArray()) {
-			return new ArrayTypeAdapter((Object[]) obj).getJsonValue();
+			return new ArrayTypeAdapter(obj).getJsonValue();
 		}
 
-		if (clazz.isPrimitive() || obj instanceof String || obj instanceof Number) {
+		if (Primitives.isWrapperType(clazz) || obj instanceof String || obj instanceof Number) {
 			return new SimpleTypeAdapter(obj).getJsonValue();
 		}
 
