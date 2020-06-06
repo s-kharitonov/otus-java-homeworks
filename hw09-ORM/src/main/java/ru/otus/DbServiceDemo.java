@@ -31,7 +31,7 @@ public class DbServiceDemo {
         var userDao = new UserDaoJdbc(sessionManager, dbExecutor);
 
         var dbServiceUser = new DbServiceUserImpl(userDao);
-        var id = dbServiceUser.saveUser(new User(0, "dbServiceUser"));
+        var id = dbServiceUser.saveUser(new User(0, "dbServiceUser", 1));
         Optional<User> user = dbServiceUser.getUser(id);
 
         user.ifPresentOrElse(
