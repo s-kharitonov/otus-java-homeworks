@@ -43,7 +43,7 @@ public class DbServiceDemo {
 
     private void createTable(DataSource dataSource) throws SQLException {
         try (var connection = dataSource.getConnection();
-             var pst = connection.prepareStatement("create table user(id long auto_increment, name varchar(50))")) {
+             var pst = connection.prepareStatement("create table user(id bigint(20) auto_increment, name varchar(255), age int(3))")) {
             pst.executeUpdate();
         }
         System.out.println("table created");

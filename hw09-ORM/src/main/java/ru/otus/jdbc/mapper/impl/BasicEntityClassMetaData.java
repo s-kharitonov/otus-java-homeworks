@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 
 public class BasicEntityClassMetaData<T> implements EntityClassMetaData<T> {
 
-	private final Class<T> clazz;
+	private final Class<?> clazz;
 
-	public BasicEntityClassMetaData(final Class<T> clazz) {
+	public BasicEntityClassMetaData(final Class<?> clazz) {
 		this.clazz = clazz;
 	}
 
@@ -27,7 +27,7 @@ public class BasicEntityClassMetaData<T> implements EntityClassMetaData<T> {
 	public Constructor<T> getConstructor() {
 		return (Constructor<T>) Arrays.stream(clazz.getConstructors())
 				.findFirst()
-				.orElse(null);
+				.orElseThrow();
 	}
 
 	@Override
@@ -35,12 +35,13 @@ public class BasicEntityClassMetaData<T> implements EntityClassMetaData<T> {
 		return Arrays.stream(clazz.getDeclaredFields())
 				.filter(field -> field.isAnnotationPresent(Id.class))
 				.findFirst()
-				.orElse(null);
+				.orElseThrow();
 	}
 
 	@Override
 	public List<Field> getAllFields() {
-		return Arrays.stream(clazz.getDeclaredFields()).collect(Collectors.toList());
+		return Arrays.stream(clazz.getDeclaredFields())
+				.collect(Collectors.toList());
 	}
 
 	@Override

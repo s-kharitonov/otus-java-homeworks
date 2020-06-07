@@ -12,7 +12,7 @@ import ru.otus.jdbc.sessionmanager.SessionManagerJdbc;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class UserDaoJdbc implements UserDao {
@@ -29,7 +29,7 @@ public class UserDaoJdbc implements UserDao {
     @Override
     public Optional<User> findById(long id) {
         try {
-            return dbExecutor.executeSelect(getConnection(), "select id, name from user where id  = ?",
+            return dbExecutor.executeSelect(getConnection(), "select * from user where id  = ?",
                     id, rs -> {
                         try {
                             if (rs.next()) {
@@ -49,8 +49,8 @@ public class UserDaoJdbc implements UserDao {
     @Override
     public long insertUser(User user) {
         try {
-            return dbExecutor.executeInsert(getConnection(), "insert into user(name) values (?)",
-                    Collections.singletonList(user.getName()));
+            return dbExecutor.executeInsert(getConnection(), "insert into user(name, age) values (?, ?)",
+                    List.of(user.getName(), user.getAge()));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new UserDaoException(e);
