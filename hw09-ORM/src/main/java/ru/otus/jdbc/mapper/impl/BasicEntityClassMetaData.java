@@ -26,8 +26,9 @@ public class BasicEntityClassMetaData<T> implements EntityClassMetaData<T> {
 	@SuppressWarnings("unchecked")
 	public Constructor<T> getConstructor() {
 		return (Constructor<T>) Arrays.stream(clazz.getConstructors())
+				.filter((constructor) -> constructor.getParameterCount() == 0)
 				.findFirst()
-				.orElseThrow();
+				.orElseThrow(() -> new RuntimeException("The default constructor is overridden!"));
 	}
 
 	@Override

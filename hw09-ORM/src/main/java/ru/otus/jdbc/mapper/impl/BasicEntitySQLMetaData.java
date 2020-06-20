@@ -22,24 +22,32 @@ public class BasicEntitySQLMetaData<T> implements EntitySQLMetaData {
 
 	@Override
 	public String getSelectByIdSql() {
-		return String.format("select * from %s where id = ?", metaData.getName());
+		return String.format("select * from %s where %s = ?", metaData.getName(), getIdFieldName());
 	}
 
 	@Override
 	public String getInsertSql() {
 		return String.format("insert into %s (%s) values (%s)",
-				metaData.getName(), extractColumnsName(), getParameters());
+				metaData.getName(),
+				extractColumnsNames(metaData.getAllFields()),
+				getParameters(metaData.getAllFields()));
 	}
 
 	@Override
 	public String getUpdateSql() {
-		return String.format("update %s set (%s) = (%s) where id = ?",
-				metaData.getName(), extractColumnsName(), getParameters());
+		return String.format("update %s set (%s) = (%s) where %s = ?",
+				metaData.getName(),
+				extractColumnsNames(metaData.getFieldsWithoutId()),
+				getParameters(metaData.getFieldsWithoutId()),
+				getIdFieldName());
 	}
 
-	private String getParameters() {
+	private String getIdFieldName() {
+		return metaData.getIdField().getName();
+	}
+
+	private String getParameters(final List<Field> fields) {
 		final StringBuilder builder = new StringBuilder();
-		final List<Field> fields = metaData.getFieldsWithoutId();
 
 		builder.append("?, ".repeat(fields.size()));
 
@@ -48,9 +56,8 @@ public class BasicEntitySQLMetaData<T> implements EntitySQLMetaData {
 				.substring(0, builder.toString().lastIndexOf(", "));
 	}
 
-	private String extractColumnsName() {
-		final String names = metaData.getFieldsWithoutId()
-				.stream()
+	private String extractColumnsNames(final List<Field> fields) {
+		final String names = fields.stream()
 				.map((field) -> field.getName() + ", ")
 				.collect(Collectors.joining());
 		return names.substring(0, names.lastIndexOf(", "));

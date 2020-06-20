@@ -8,9 +8,12 @@ import ru.otus.annotations.Id;
  */
 public class User {
 	@Id
-	private final long id;
-	private final String name;
-	private final int age;
+	private long id;
+	private String name;
+	private int age;
+
+	public User() {
+	}
 
 	public User(long id, String name, int age) {
 		this.id = id;
@@ -35,6 +38,7 @@ public class User {
 		return "User{" +
 				"id=" + id +
 				", name='" + name + '\'' +
+				", age=" + age +
 				'}';
 	}
 }

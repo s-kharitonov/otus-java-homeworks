@@ -12,8 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -35,31 +34,26 @@ public class BasicJdbcMapper<T> implements JdbcMapper<T> {
 
 	@Override
 	public void insert(final T objectData) {
-		final String sqlQuery = sqlMetaData.getInsertSql();
-		final List<Object> params = classMetaData.getFieldsWithoutId()
-				.stream()
-				.map(getFieldValue(objectData))
-				.collect(Collectors.toList());
-
 		try {
-			executor.executeInsert(connection, sqlQuery, params);
+			insertThrowable(objectData);
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-			e.printStackTrace();
 		}
 	}
 
 	@Override
 	public void update(final T objectData) {
 		final String sqlQuery = sqlMetaData.getUpdateSql();
-		final List<Object> params = classMetaData.getFieldsWithoutId()
-				.stream()
-				.map(getFieldValue(objectData))
-				.collect(Collectors.toList());
+		final List<Object> params = extractFieldValues(objectData, classMetaData.getFieldsWithoutId());
 
 		try {
+			final var field = classMetaData.getIdField();
+
+			field.setAccessible(true);
+			params.add(field.get(objectData));
+
 			executor.executeInsert(connection, sqlQuery, params);
-		} catch (SQLException e) {
+		} catch (SQLException | IllegalAccessException e) {
 			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
@@ -67,17 +61,10 @@ public class BasicJdbcMapper<T> implements JdbcMapper<T> {
 
 	@Override
 	public void insertOrUpdate(final T objectData) {
-		final String insertSqlQuery = sqlMetaData.getInsertSql();
-		final String updateSqlQuery = sqlMetaData.getUpdateSql();
-		final List<Object> params = classMetaData.getFieldsWithoutId()
-				.stream()
-				.map(getFieldValue(objectData))
-				.collect(Collectors.toList());
-
 		try {
-			insertOrUpdate(insertSqlQuery, updateSqlQuery, params);
+			insertThrowable(objectData);
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
+			update(objectData);
 		}
 	}
 
@@ -88,7 +75,7 @@ public class BasicJdbcMapper<T> implements JdbcMapper<T> {
 			final Optional<T> result = executor.executeSelect(connection, selectQuery, id, readObjectFromRs());
 
 			return result.orElseThrow();
-		} catch (SQLException e) {
+		} catch (SQLException | NoSuchElementException e) {
 			logger.error(e.getMessage());
 			return null;
 		}
@@ -98,9 +85,13 @@ public class BasicJdbcMapper<T> implements JdbcMapper<T> {
 		return (rs) -> {
 			try {
 				if (rs.next()) {
-					final Object[] params = extractParamValues(rs);
+					final Map<String, Object> values = extractValuesFromResult(rs);
+					final var defaultConstructor = classMetaData.getConstructor();
+					final var obj = defaultConstructor.newInstance();
 
-					return classMetaData.getConstructor().newInstance(params);
+					fillFiledValues(obj, values);
+
+					return obj;
 				}
 			} catch (SQLException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
 				logger.error(e.getMessage());
@@ -109,26 +100,41 @@ public class BasicJdbcMapper<T> implements JdbcMapper<T> {
 		};
 	}
 
-	private Object[] extractParamValues(ResultSet rs) {
-		return classMetaData.getAllFields()
-				.stream()
-				.map(Field::getName)
-				.map((name) -> {
-					try {
-						return rs.getObject(name);
-					} catch (SQLException e) {
-						return null;
-					}
-				})
-				.toArray();
+	private void fillFiledValues(final Object owner, final Map<String, Object> values) {
+		final var clazz = owner.getClass();
+		final var fields = clazz.getDeclaredFields();
+
+		for (var field : fields) {
+			var name = field.getName();
+
+			field.setAccessible(true);
+			try {
+				field.set(owner, values.get(name));
+			} catch (IllegalAccessException ignored) {
+			}
+		}
 	}
 
-	private void insertOrUpdate(final String insertQuery, final String updateQuery, final List<Object> params) throws SQLException {
-		try {
-			executor.executeInsert(connection, insertQuery, params);
-		} catch (SQLException e) {
-			executor.executeInsert(connection, updateQuery, params);
-		}
+	private List<Object> extractFieldValues(final Object owner, final List<Field> fields) {
+		return fields.stream()
+				.map(getFieldValue(owner))
+				.collect(Collectors.toList());
+	}
+
+	private Map<String, Object> extractValuesFromResult(ResultSet rs) {
+		final Map<String, Object> values = new HashMap<>();
+
+		classMetaData.getAllFields()
+				.stream()
+				.map(Field::getName)
+				.forEach((name) -> {
+					try {
+						values.put(name, rs.getObject(name));
+					} catch (SQLException ignored) {
+					}
+				});
+
+		return values;
 	}
 
 	private Function<Field, Object> getFieldValue(final Object owner) {
@@ -140,5 +146,12 @@ public class BasicJdbcMapper<T> implements JdbcMapper<T> {
 				return null;
 			}
 		};
+	}
+
+	private void insertThrowable(final T objectData) throws SQLException {
+		final String sqlQuery = sqlMetaData.getInsertSql();
+		final List<Object> params = extractFieldValues(objectData, classMetaData.getAllFields());
+
+		executor.executeInsert(connection, sqlQuery, params);
 	}
 }

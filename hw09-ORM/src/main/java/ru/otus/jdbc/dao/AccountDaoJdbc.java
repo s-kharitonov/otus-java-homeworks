@@ -1,8 +1,7 @@
 package ru.otus.jdbc.dao;
 
-
-import ru.otus.core.dao.UserDao;
-import ru.otus.core.model.User;
+import ru.otus.core.dao.AccountDao;
+import ru.otus.core.model.Account;
 import ru.otus.core.sessionmanager.SessionManager;
 import ru.otus.jdbc.DbExecutor;
 import ru.otus.jdbc.DbExecutorImpl;
@@ -13,43 +12,44 @@ import ru.otus.jdbc.sessionmanager.SessionManagerJdbc;
 import java.sql.Connection;
 import java.util.Optional;
 
-public class UserDaoJdbc implements UserDao {
-	private final SessionManagerJdbc sessionManager;
-	private final DbExecutor<User> executor;
+public class AccountDaoJdbc implements AccountDao {
 
-	public UserDaoJdbc(SessionManagerJdbc sessionManager, DbExecutorImpl<User> dbExecutor) {
+	private final SessionManagerJdbc sessionManager;
+	private final DbExecutor<Account> executor;
+
+	public AccountDaoJdbc(SessionManagerJdbc sessionManager, DbExecutorImpl<Account> dbExecutor) {
 		this.sessionManager = sessionManager;
 		this.executor = dbExecutor;
 	}
 
 	@Override
-	public Optional<User> findById(long id) {
+	public Optional<Account> findById(long id) {
 		final var mapper = getJdbcMapper();
 
-		return Optional.ofNullable(mapper.findById(id, User.class));
+		return Optional.ofNullable(mapper.findById(id, Account.class));
 	}
 
 	@Override
-	public long insertUser(User user) {
+	public long insertAccount(Account account) {
 		final var mapper = getJdbcMapper();
 
-		mapper.insert(user);
+		mapper.insert(account);
 
-		return user.getId();
+		return account.getNo();
 	}
 
 	@Override
-	public void updateUser(final User user) {
+	public void updateAccount(final Account account) {
 		final var mapper = getJdbcMapper();
 
-		mapper.update(user);
+		mapper.update(account);
 	}
 
 	@Override
-	public void insertOrUpdate(final User user) {
+	public void insertOrUpdate(final Account account) {
 		final var mapper = getJdbcMapper();
 
-		mapper.insertOrUpdate(user);
+		mapper.insertOrUpdate(account);
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class UserDaoJdbc implements UserDao {
 		return sessionManager.getCurrentSession().getConnection();
 	}
 
-	private JdbcMapper<User> getJdbcMapper() {
-		return new BasicJdbcMapper<>(User.class, getConnection(), executor);
+	private JdbcMapper<Account> getJdbcMapper() {
+		return new BasicJdbcMapper<>(Account.class, getConnection(), executor);
 	}
 }
