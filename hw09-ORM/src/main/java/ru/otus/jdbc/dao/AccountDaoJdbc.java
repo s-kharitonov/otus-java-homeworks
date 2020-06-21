@@ -5,11 +5,13 @@ import ru.otus.core.model.Account;
 import ru.otus.core.sessionmanager.SessionManager;
 import ru.otus.jdbc.DbExecutor;
 import ru.otus.jdbc.DbExecutorImpl;
+import ru.otus.jdbc.mapper.EntityClassMetaData;
 import ru.otus.jdbc.mapper.JdbcMapper;
+import ru.otus.jdbc.mapper.impl.BasicEntityClassMetaData;
+import ru.otus.jdbc.mapper.impl.BasicEntitySQLMetaData;
 import ru.otus.jdbc.mapper.impl.BasicJdbcMapper;
 import ru.otus.jdbc.sessionmanager.SessionManagerJdbc;
 
-import java.sql.Connection;
 import java.util.Optional;
 
 public class AccountDaoJdbc implements AccountDao {
@@ -57,11 +59,8 @@ public class AccountDaoJdbc implements AccountDao {
 		return sessionManager;
 	}
 
-	private Connection getConnection() {
-		return sessionManager.getCurrentSession().getConnection();
-	}
-
 	private JdbcMapper<Account> getJdbcMapper() {
-		return new BasicJdbcMapper<>(Account.class, getConnection(), executor);
+		final EntityClassMetaData<Account> classMetaData = new BasicEntityClassMetaData<>(Account.class);
+		return new BasicJdbcMapper<>(classMetaData, new BasicEntitySQLMetaData<>(classMetaData), executor, sessionManager);
 	}
 }
