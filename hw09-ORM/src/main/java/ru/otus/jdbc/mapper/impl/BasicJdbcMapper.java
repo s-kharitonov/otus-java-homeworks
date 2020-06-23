@@ -90,7 +90,7 @@ public class BasicJdbcMapper<T> implements JdbcMapper<T> {
 					final var defaultConstructor = classMetaData.getConstructor();
 					final var obj = defaultConstructor.newInstance();
 
-					fillFiledValues(obj, values);
+					fillFieldValues(obj, values);
 
 					return obj;
 				}
@@ -101,9 +101,8 @@ public class BasicJdbcMapper<T> implements JdbcMapper<T> {
 		};
 	}
 
-	private void fillFiledValues(final Object owner, final Map<String, Object> values) {
-		final var clazz = owner.getClass();
-		final var fields = clazz.getDeclaredFields();
+	private void fillFieldValues(final Object owner, final Map<String, Object> values) {
+		final var fields = classMetaData.getAllFields();
 
 		for (var field : fields) {
 			var name = field.getName();
