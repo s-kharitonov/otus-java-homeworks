@@ -1,36 +1,42 @@
 package ru.otus.core.model;
 
-import ru.otus.annotations.Id;
 
-/**
- * @author sergey
- * created on 03.02.19.
- */
+import javax.persistence.*;
+
+@Entity
+@Table(name = "users")
 public class User {
+
 	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@Column(name = "id")
 	private long id;
+
+	@Column(name = "name")
 	private String name;
-	private int age;
 
 	public User() {
 	}
 
-	public User(long id, String name, int age) {
+	public User(long id, String name) {
 		this.id = id;
 		this.name = name;
-		this.age = age;
-	}
-
-	public int getAge() {
-		return age;
 	}
 
 	public long getId() {
 		return id;
 	}
 
+	public void setId(long id) {
+		this.id = id;
+	}
+
 	public String getName() {
 		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	@Override
@@ -38,7 +44,6 @@ public class User {
 		return "User{" +
 				"id=" + id +
 				", name='" + name + '\'' +
-				", age=" + age +
 				'}';
 	}
 }
