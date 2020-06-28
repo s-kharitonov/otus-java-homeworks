@@ -22,7 +22,7 @@ public class User {
 
 	@OneToMany(fetch = FetchType.LAZY, targetEntity = Phone.class)
 	@JoinColumn(name = "phone_id")
-	private List<Phone> numbers;
+	private List<Phone> phones;
 
 	public User() {
 	}
@@ -56,12 +56,12 @@ public class User {
 		this.street = street;
 	}
 
-	public List<Phone> getNumbers() {
-		return numbers;
+	public List<Phone> getPhones() {
+		return phones;
 	}
 
-	public void setNumbers(final List<Phone> numbers) {
-		this.numbers = numbers;
+	public void setPhones(final List<Phone> phones) {
+		this.phones = phones;
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class User {
 				"id=" + id +
 				", name='" + name + '\'' +
 				", street='" + street + '\'' +
-				", numbers=" + numbers +
+				", phones=" + phones +
 				'}';
 	}
 }
