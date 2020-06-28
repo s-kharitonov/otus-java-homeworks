@@ -2,8 +2,9 @@ package ru.otus.core.model;
 
 
 import javax.persistence.*;
+import java.util.List;
 
-@Entity
+@Entity(name = "User")
 @Table(name = "users")
 public class User {
 
@@ -14,6 +15,14 @@ public class User {
 
 	@Column(name = "name")
 	private String name;
+
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, targetEntity = Address.class)
+	@JoinColumn(name = "address_id")
+	private String street;
+
+	@OneToMany(fetch = FetchType.LAZY, targetEntity = Phone.class)
+	@JoinColumn(name = "phone_id")
+	private List<Phone> numbers;
 
 	public User() {
 	}
@@ -27,7 +36,7 @@ public class User {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(final long id) {
 		this.id = id;
 	}
 
@@ -35,8 +44,24 @@ public class User {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
+	}
+
+	public String getStreet() {
+		return street;
+	}
+
+	public void setStreet(final String street) {
+		this.street = street;
+	}
+
+	public List<Phone> getNumbers() {
+		return numbers;
+	}
+
+	public void setNumbers(final List<Phone> numbers) {
+		this.numbers = numbers;
 	}
 
 	@Override
@@ -44,6 +69,8 @@ public class User {
 		return "User{" +
 				"id=" + id +
 				", name='" + name + '\'' +
+				", street='" + street + '\'' +
+				", numbers=" + numbers +
 				'}';
 	}
 }
