@@ -32,10 +32,10 @@ tasks.withType(JavaCompile) {
 }
 
 shadowJar {
-    archiveBaseName.set('hwOtus09')
+    archiveBaseName.set('hwOtus10')
     archiveVersion.set('0.1')
     manifest {
-        attributes 'Main-Class': 'ru.otus.Main'
+        attributes 'Main-Class': 'ru.otus.DbServiceDemo'
     }
 }
 
