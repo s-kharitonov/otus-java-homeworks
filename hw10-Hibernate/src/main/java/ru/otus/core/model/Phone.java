@@ -9,20 +9,28 @@ public class Phone {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@Column(name = "id")
-	private Long id;
+	private long id;
 
 	@Column(name = "number", nullable = false)
 	private String number;
 
-	@ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	public Long getId() {
+	public Phone() {
+	}
+
+	public Phone(final String number, final User user) {
+		this.number = number;
+		this.user = user;
+	}
+
+	public long getId() {
 		return id;
 	}
 
-	public void setId(final Long id) {
+	public void setId(final long id) {
 		this.id = id;
 	}
 
@@ -47,7 +55,6 @@ public class Phone {
 		return "Phone{" +
 				"id=" + id +
 				", number='" + number + '\'' +
-				", user=" + user +
 				'}';
 	}
 }

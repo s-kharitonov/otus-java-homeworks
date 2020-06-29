@@ -16,19 +16,18 @@ public class User {
 	@Column(name = "name")
 	private String name;
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, targetEntity = Address.class)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "address_id")
-	private String street;
+	private Address address;
 
-	@OneToMany(fetch = FetchType.LAZY, targetEntity = Phone.class)
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "phone_id")
 	private List<Phone> phones;
 
 	public User() {
 	}
 
-	public User(long id, String name) {
-		this.id = id;
+	public User(final String name) {
 		this.name = name;
 	}
 
@@ -48,14 +47,6 @@ public class User {
 		this.name = name;
 	}
 
-	public String getStreet() {
-		return street;
-	}
-
-	public void setStreet(final String street) {
-		this.street = street;
-	}
-
 	public List<Phone> getPhones() {
 		return phones;
 	}
@@ -64,12 +55,20 @@ public class User {
 		this.phones = phones;
 	}
 
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(final Address address) {
+		this.address = address;
+	}
+
 	@Override
 	public String toString() {
 		return "User{" +
 				"id=" + id +
 				", name='" + name + '\'' +
-				", street='" + street + '\'' +
+				", address=" + address +
 				", phones=" + phones +
 				'}';
 	}

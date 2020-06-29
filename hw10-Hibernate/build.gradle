@@ -15,6 +15,7 @@ dependencies {
     implementation 'com.h2database:h2'
     implementation 'ch.qos.logback:logback-classic'
     implementation'org.hibernate:hibernate-core'
+    implementation 'com.google.guava:guava'
 }
 
 test {

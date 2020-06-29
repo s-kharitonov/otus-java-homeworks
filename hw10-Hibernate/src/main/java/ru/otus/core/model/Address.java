@@ -9,20 +9,28 @@ public class Address {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@Column(name = "id")
-	private Long id;
+	private long id;
 
 	@Column(name = "street", nullable = false)
 	private String street;
 
-	@OneToOne(fetch = FetchType.LAZY, targetEntity = User.class)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	public Long getId() {
+	public Address() {
+	}
+
+	public Address(final String street, final User user) {
+		this.street = street;
+		this.user = user;
+	}
+
+	public long getId() {
 		return id;
 	}
 
-	public void setId(final Long id) {
+	public void setId(final long id) {
 		this.id = id;
 	}
 
@@ -47,7 +55,6 @@ public class Address {
 		return "Address{" +
 				"id=" + id +
 				", street='" + street + '\'' +
-				", user=" + user +
 				'}';
 	}
 }
