@@ -8,22 +8,17 @@ public class Address {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
-	@Column(name = "id")
+	@Column(name = "address_id")
 	private long id;
 
 	@Column(name = "street", nullable = false)
 	private String street;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
-	private User user;
-
 	public Address() {
 	}
 
-	public Address(final String street, final User user) {
+	public Address(final String street) {
 		this.street = street;
-		this.user = user;
 	}
 
 	public long getId() {
@@ -40,14 +35,6 @@ public class Address {
 
 	public void setStreet(final String street) {
 		this.street = street;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(final User user) {
-		this.user = user;
 	}
 
 	@Override

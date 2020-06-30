@@ -1,6 +1,5 @@
 package ru.otus;
 
-import com.google.common.collect.Lists;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +16,7 @@ import ru.otus.hibernate.dao.PhoneDAOHibernate;
 import ru.otus.hibernate.dao.UserDaoHibernate;
 import ru.otus.hibernate.sessionmanager.SessionManagerHibernate;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,26 +39,26 @@ public class DbServiceDemo {
 		final AddressService addressService = new AddressServiceImpl(addressDAO);
 		final PhoneService phoneService = new PhoneServiceImpl(phoneDAO);
 
-		final var user = new User("Вася");
-		final var phones = Lists.newArrayList(
+		final var user = new User(
+				"Вася",
+				new Address("street1"));
+
+		user.setPhones(Arrays.asList(
 				new Phone("1", user),
 				new Phone("2", user),
 				new Phone("3", user)
-		);
-
-		user.setAddress(new Address("street1", user));
-		user.setPhones(phones);
+		));
 
 		final long id = dbServiceUser.saveUser(user);
 		final Optional<User> createdUser = dbServiceUser.getUser(id);
 		final Address createdAddress = createdUser.orElseThrow().getAddress();
 		final List<Phone> createdPhones = createdUser.orElseThrow().getPhones();
 
-		logger.info("created user{}", createdUser.orElse(null));
-		logger.info("created address{}", addressService.findById(createdAddress.getId()).orElse(null));
+		logger.info("created user: {}", createdUser.orElse(null));
+		logger.info("created address: {}", addressService.findById(createdAddress.getId()).orElse(null));
 
 		createdPhones.forEach((phone) -> {
-			logger.info("created phone{}", phoneService.findById(phone.getId()).orElse(null));
+			logger.info("created phone: {}", phoneService.findById(phone.getId()).orElse(null));
 		});
 	}
 }

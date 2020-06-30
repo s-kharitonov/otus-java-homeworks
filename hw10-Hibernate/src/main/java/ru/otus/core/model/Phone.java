@@ -8,7 +8,7 @@ public class Phone {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
-	@Column(name = "id")
+	@Column(name = "phone_id")
 	private long id;
 
 	@Column(name = "number", nullable = false)
@@ -26,6 +26,14 @@ public class Phone {
 		this.user = user;
 	}
 
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(final User user) {
+		this.user = user;
+	}
+
 	public long getId() {
 		return id;
 	}
@@ -40,14 +48,6 @@ public class Phone {
 
 	public void setNumber(final String number) {
 		this.number = number;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(final User user) {
-		this.user = user;
 	}
 
 	@Override

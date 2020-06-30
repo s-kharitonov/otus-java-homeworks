@@ -10,25 +10,26 @@ public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
-	@Column(name = "id")
+	@Column(name = "user_id")
 	private long id;
 
 	@Column(name = "name")
 	private String name;
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "address_id")
 	private Address address;
 
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinColumn(name = "phone_id")
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "user_id")
 	private List<Phone> phones;
 
 	public User() {
 	}
 
-	public User(final String name) {
+	public User(final String name, final Address address) {
 		this.name = name;
+		this.address = address;
 	}
 
 	public long getId() {
