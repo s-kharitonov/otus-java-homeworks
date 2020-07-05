@@ -1,5 +1,7 @@
 package ru.otus;
 
+import ru.otus.adapters.ReflectionsTypeAdapter;
+import ru.otus.adapters.impl.ClassTypeAdapter;
 import ru.otus.appcontainer.AppComponentsContainerImpl;
 import ru.otus.appcontainer.api.AppComponentsContainer;
 import ru.otus.config.AppConfig;
@@ -16,7 +18,8 @@ PS Приложение представляет из себя тренажер 
 public class App {
 
 	public static void main(String[] args) throws Exception {
-		AppComponentsContainer container = new AppComponentsContainerImpl(AppConfig.class);
+		final ReflectionsTypeAdapter adapter = new ClassTypeAdapter(AppConfig.class);
+		AppComponentsContainer container = new AppComponentsContainerImpl(adapter.getReflections());
 		GameProcessor gameProcessor = container.getAppComponent(GameProcessor.class);
 		gameProcessor.startGame();
 	}
