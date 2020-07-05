@@ -35,7 +35,10 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 		configs.forEach((clazz) -> {
 			try {
 				final Object configInstance = clazz.getDeclaredConstructor().newInstance();
-				final Set<Method> methods = ReflectionUtils.getMethods(clazz, (method) -> method.isAnnotationPresent(AppComponent.class));
+				final Set<Method> methods = ReflectionUtils.getMethods(
+						clazz,
+						(method) -> Objects.requireNonNull(method).isAnnotationPresent(AppComponent.class)
+				);
 
 				methodsByClass.put(clazz, methods);
 				methods.forEach((method) -> {
@@ -55,37 +58,42 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 			throw new IllegalArgumentException("components not found!");
 		}
 
-		methods.sort((m1, m2) -> {
-			final int order1 = m1.getAnnotation(AppComponent.class).order();
-			final int order2 = m2.getAnnotation(AppComponent.class).order();
-
-			return Integer.compare(order1, order2);
-		});
+		sortMethodsByOrder(methods);
 
 		methods.forEach((method) -> {
-			final Object configInstance = configsByMethod.get(method);
+			final Object owner = configsByMethod.get(method);
 			final String componentName = method.getAnnotation(AppComponent.class).name();
 			final Class<?> returnType = method.getReturnType();
 			final Parameter[] parameters = method.getParameters();
 			final Object[] args = Arrays.stream(parameters)
 					.map((parameter) -> appComponentsByClass.get(parameter.getType()))
 					.toArray();
+			final Object result = invokeMethod(owner, method, args);
 
-			try {
-				Object result;
-
-				if (parameters.length == 0) {
-					result = method.invoke(configInstance);
-				} else {
-					result = method.invoke(configInstance, args);
-				}
-
-				appComponentsByClass.put(returnType, result);
-				appComponentsByName.put(componentName, result);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			appComponentsByClass.put(returnType, result);
+			appComponentsByName.put(componentName, result);
 		});
+	}
+
+	private void sortMethodsByOrder(final List<Method> methods) {
+		methods.sort((m1, m2) -> {
+			final int order1 = m1.getAnnotation(AppComponent.class).order();
+			final int order2 = m2.getAnnotation(AppComponent.class).order();
+
+			return Integer.compare(order1, order2);
+		});
+	}
+
+	private Object invokeMethod(final Object owner, final Method method, final Object... args) {
+		try {
+			if (args.length == 0) {
+				return method.invoke(owner);
+			} else {
+				return method.invoke(owner, args);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("method execution error, method name: %s", method.getName()), e);
+		}
 	}
 
 	@Override
