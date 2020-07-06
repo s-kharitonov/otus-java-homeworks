@@ -7,13 +7,13 @@ import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
-import ru.otus.adapters.ReflectionsTypeAdapter;
+import ru.otus.adapters.ReflectionsAdapter;
 
-public class ClassTypeAdapter implements ReflectionsTypeAdapter {
+public class ClassAdapter implements ReflectionsAdapter {
 
 	private final Class<?>[] classes;
 
-	public ClassTypeAdapter(final Class<?>... classes) {
+	public ClassAdapter(final Class<?>... classes) {
 		this.classes = classes;
 	}
 

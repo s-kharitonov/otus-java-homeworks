@@ -7,12 +7,12 @@ import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
-import ru.otus.adapters.ReflectionsTypeAdapter;
+import ru.otus.adapters.ReflectionsAdapter;
 
-public class PackageTypeAdapter implements ReflectionsTypeAdapter {
+public class PackageAdapter implements ReflectionsAdapter {
 	private final String packageName;
 
-	public PackageTypeAdapter(final String packageName) {
+	public PackageAdapter(final String packageName) {
 		this.packageName = packageName;
 	}
 

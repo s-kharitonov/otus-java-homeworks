@@ -2,6 +2,6 @@ package ru.otus.adapters;
 
 import org.reflections.Reflections;
 
-public interface ReflectionsTypeAdapter {
+public interface ReflectionsAdapter {
 	Reflections getReflections();
 }
