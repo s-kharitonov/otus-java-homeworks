@@ -8,7 +8,6 @@ import ru.otus.appcontainer.api.AppComponent;
 import ru.otus.appcontainer.api.AppComponentsContainer;
 import ru.otus.appcontainer.api.AppComponentsContainerConfig;
 
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -37,7 +36,7 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 			throw new IllegalArgumentException("configuration classes not found!");
 		}
 
-		sortCollectionByOrder(configs);
+		sortConfigsByOrder(configs);
 
 		configs.forEach((clazz) -> {
 			final Object appConfig = initAppConfig(clazz);
@@ -47,8 +46,26 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 				throw new IllegalArgumentException("components not found!");
 			}
 
-			sortCollectionByOrder(methods);
+			sortMethodsByOrder(methods);
 			fillComponentsStore(methods, appConfig);
+		});
+	}
+
+	private void sortMethodsByOrder(final List<Method> methods) {
+		methods.sort((m1, m2) -> {
+			final int order1 = m1.getAnnotation(AppComponent.class).order();
+			final int order2 = m2.getAnnotation(AppComponent.class).order();
+
+			return Integer.compare(order1, order2);
+		});
+	}
+
+	private void sortConfigsByOrder(final List<Class<?>> configs) {
+		configs.sort((c1, c2) -> {
+			final int order1 = c1.getAnnotation(AppComponentsContainerConfig.class).order();
+			final int order2 = c2.getAnnotation(AppComponentsContainerConfig.class).order();
+
+			return Integer.compare(order1, order2);
 		});
 	}
 
@@ -87,15 +104,6 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 		} catch (Exception e) {
 			throw new IllegalArgumentException("class for configuration must have a default constructor!", e);
 		}
-	}
-
-	private void sortCollectionByOrder(final List<? extends AnnotatedElement> collection) {
-		collection.sort((c1, c2) -> {
-			final int order1 = c1.getAnnotation(AppComponent.class).order();
-			final int order2 = c2.getAnnotation(AppComponent.class).order();
-
-			return Integer.compare(order1, order2);
-		});
 	}
 
 	private Object invokeMethod(final Object owner, final Method method, final Object... args) {
