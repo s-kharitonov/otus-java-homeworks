@@ -13,7 +13,7 @@ import java.util.*;
 
 public class AppComponentsContainerImpl implements AppComponentsContainer {
 
-	private final Map<Class<?>, Object> appComponentsByClass = new HashMap<>();
+	private final List<Object> appComponents = new ArrayList<>();
 	private final Map<String, Object> appComponentsByName = new HashMap<>();
 	private final Reflections reflections;
 
@@ -72,20 +72,21 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 	private void fillComponentsStore(final List<Method> methods, final Object appConfig) {
 		methods.forEach((method) -> {
 			final String componentName = method.getAnnotation(AppComponent.class).name();
-			final Class<?> returnType = method.getReturnType();
 			final Object[] args = getArguments(method);
 			final Object result = invokeMethod(appConfig, method, args);
 
-			appComponentsByClass.put(returnType, result);
-			appComponentsByClass.put(result.getClass(), result);
+			appComponents.add(result);
 			appComponentsByName.put(componentName, result);
 		});
 	}
 
 	private Object[] getArguments(final Method method) {
 		return Arrays.stream(method.getParameters())
-				.map((parameter) -> appComponentsByClass.get(parameter.getType()))
-				.toArray();
+				.map((parameter) ->
+						appComponents.stream().filter((component) ->
+								parameter.getType().isAssignableFrom(component.getClass())
+						).findFirst().orElse(null)
+				).toArray();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -117,7 +118,9 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <C> C getAppComponent(final Class<C> componentClass) {
-		return (C) appComponentsByClass.get(componentClass);
+		return (C) appComponents.stream().filter((component) ->
+				componentClass.isAssignableFrom(component.getClass())
+		).findFirst().orElse(null);
 	}
 
 	@Override
