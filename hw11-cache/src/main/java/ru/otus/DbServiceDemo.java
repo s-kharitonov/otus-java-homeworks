@@ -3,6 +3,10 @@ package ru.otus;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.otus.cache.HwCache;
+import ru.otus.cache.HwListener;
+import ru.otus.cache.impl.LogEventListener;
+import ru.otus.cache.impl.MyCache;
 import ru.otus.core.dao.AddressDAO;
 import ru.otus.core.dao.PhoneDAO;
 import ru.otus.core.dao.UserDao;
@@ -33,7 +37,9 @@ public class DbServiceDemo {
 
 		final SessionManagerHibernate sessionManager = new SessionManagerHibernate(sessionFactory);
 		final UserDao userDao = new UserDaoHibernate(sessionManager);
-		final DBServiceUser dbServiceUser = new DbServiceUserImpl(userDao);
+		final HwCache<Long, User> userCache = new MyCache<>();
+		final HwListener<Long, User> userLogListener = new LogEventListener<>();
+		final DBServiceUser dbServiceUser = new DbServiceUserImpl(userDao, userCache, userLogListener);
 		final AddressDAO addressDAO = new AddressDAOHibernate(sessionManager);
 		final PhoneDAO phoneDAO = new PhoneDAOHibernate(sessionManager);
 		final AddressService addressService = new AddressServiceImpl(addressDAO);
