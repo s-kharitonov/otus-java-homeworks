@@ -15,4 +15,5 @@ student : Sergey Kharitonov
 |[hw08-json-object-writer](https://github.com/skharitonov95/otus-homeworks/tree/master/hw08-json-object-writer)|Цель: Научиться сериализовывать объект в json, попрактиковаться в разборе структуры объекта.|
 |[hw09-ORM](https://github.com/skharitonov95/otus-homeworks/tree/master/hw09-ORM)|Цель: Научиться работать с jdbc. На практике освоить многоуровневую архитектуру приложения.|
 |[hw10-Hibernate](https://github.com/skharitonov95/otus-homeworks/tree/master/hw10-Hibernate)|Цель: На практике освоить основы Hibernate. Понять как аннотации-hibernate влияют на формирование sql-запросов.|
+|[hw11-cache](https://github.com/skharitonov95/otus-homeworks/tree/master/hw11-cache)|Цель: Научится применять WeakHashMap, понять базовый принцип организации кеширования.|
 |[hw13-IoC-container](https://github.com/skharitonov95/otus-homeworks/tree/master/hw13-IoC-container)|Цель: В процессе создания своего контекста понять как работает основная часть Spring framework.|
