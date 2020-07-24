@@ -1,4 +1,4 @@
-##hw01-gradle
+## hw01-gradle
 
 Проект gradle с модульной структурой
 
