@@ -2,7 +2,6 @@ package ru.otus.core.model;
 
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity(name = "User")
 @Table(name = "users")
@@ -13,23 +12,22 @@ public class User {
 	@Column(name = "user_id")
 	private long id;
 
-	@Column(name = "name")
+	@Column(name = "name", nullable = false)
 	private String name;
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "address_id")
-	private Address address;
+	@Column(name = "login", unique = true, nullable = false)
+	private String login;
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "user_id")
-	private List<Phone> phones;
+	@Column(name = "password", nullable = false)
+	private String password;
 
 	public User() {
 	}
 
-	public User(final String name, final Address address) {
+	public User(final String name, final String login, final String password) {
 		this.name = name;
-		this.address = address;
+		this.login = login;
+		this.password = password;
 	}
 
 	public long getId() {
@@ -48,20 +46,20 @@ public class User {
 		this.name = name;
 	}
 
-	public List<Phone> getPhones() {
-		return phones;
+	public String getLogin() {
+		return login;
 	}
 
-	public void setPhones(final List<Phone> phones) {
-		this.phones = phones;
+	public void setLogin(final String login) {
+		this.login = login;
 	}
 
-	public Address getAddress() {
-		return address;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setAddress(final Address address) {
-		this.address = address;
+	public void setPassword(final String password) {
+		this.password = password;
 	}
 
 	@Override
@@ -69,8 +67,8 @@ public class User {
 		return "User{" +
 				"id=" + id +
 				", name='" + name + '\'' +
-				", address=" + address +
-				", phones=" + phones +
+				", login='" + login + '\'' +
+				", password='" + password + '\'' +
 				'}';
 	}
 }

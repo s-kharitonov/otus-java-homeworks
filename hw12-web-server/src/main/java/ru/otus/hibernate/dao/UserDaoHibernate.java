@@ -2,6 +2,7 @@ package ru.otus.hibernate.dao;
 
 
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.core.dao.UserDao;
@@ -11,10 +12,15 @@ import ru.otus.core.sessionmanager.SessionManager;
 import ru.otus.hibernate.sessionmanager.DatabaseSessionHibernate;
 import ru.otus.hibernate.sessionmanager.SessionManagerHibernate;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class UserDaoHibernate implements UserDao {
-	private static Logger logger = LoggerFactory.getLogger(UserDaoHibernate.class);
+	private static final Logger logger = LoggerFactory.getLogger(UserDaoHibernate.class);
 
 	private final SessionManagerHibernate sessionManager;
 
@@ -35,28 +41,37 @@ public class UserDaoHibernate implements UserDao {
 	}
 
 	@Override
-	public long insertUser(User user) {
-		DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
+	public Optional<User> findFirst() {
 		try {
-			Session hibernateSession = currentSession.getHibernateSession();
-			hibernateSession.persist(user);
-			hibernateSession.flush();
-			return user.getId();
+			final Session session = sessionManager.getCurrentSession().getHibernateSession();
+			final CriteriaBuilder builder = session.getCriteriaBuilder();
+			final CriteriaQuery<User> criteriaQuery = builder.createQuery(User.class);
+			final Root<User> root = criteriaQuery.from(User.class);
+			final CriteriaQuery<User> usersQuery = criteriaQuery.select(root);
+			final Query<User> query = session.createQuery(usersQuery)
+					.setFirstResult(0)
+					.setMaxResults(1);
+
+			return Optional.ofNullable(query.getSingleResult());
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			throw new UserDaoException(e);
+			return Optional.empty();
 		}
 	}
 
 	@Override
-	public void updateUser(User user) {
-		DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
+	public List<User> findAllUsers() {
 		try {
-			Session hibernateSession = currentSession.getHibernateSession();
-			hibernateSession.merge(user);
+			final Session session = sessionManager.getCurrentSession().getHibernateSession();
+			final CriteriaBuilder builder = session.getCriteriaBuilder();
+			final CriteriaQuery<User> criteriaQuery = builder.createQuery(User.class);
+			final Root<User> root = criteriaQuery.from(User.class);
+			final CriteriaQuery<User> usersQuery = criteriaQuery.select(root);
+
+			return session.createQuery(usersQuery).getResultList();
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			throw new UserDaoException(e);
+			return new ArrayList<>();
 		}
 	}
 

@@ -12,9 +12,15 @@ dependencies {
     testImplementation group: 'org.assertj', name: 'assertj-core'
     testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter'
 
+    implementation 'com.google.code.gson:gson'
+    implementation 'org.eclipse.jetty:jetty-server'
+    implementation 'org.eclipse.jetty:jetty-webapp'
+    implementation 'org.eclipse.jetty:jetty-security'
+    implementation 'org.freemarker:freemarker'
+
     implementation 'com.h2database:h2'
     implementation 'ch.qos.logback:logback-classic'
-    implementation'org.hibernate:hibernate-core'
+    implementation 'org.hibernate:hibernate-core'
 }
 
 test {

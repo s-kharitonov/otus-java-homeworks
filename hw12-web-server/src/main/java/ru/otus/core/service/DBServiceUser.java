@@ -2,6 +2,7 @@ package ru.otus.core.service;
 
 import ru.otus.core.model.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface DBServiceUser {
@@ -10,4 +11,9 @@ public interface DBServiceUser {
 
 	Optional<User> getUser(long id);
 
+	Optional<User> getFirstUser();
+
+	void createDefaultUserList();
+
+	List<User> findAllUsers();
 }
