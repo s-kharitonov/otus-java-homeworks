@@ -6,6 +6,7 @@ import ru.otus.core.dao.UserDao;
 import ru.otus.core.model.User;
 import ru.otus.core.sessionmanager.SessionManager;
 import ru.otus.domain.UserDTO;
+import ru.otus.validators.ObjectValidator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +17,20 @@ public class DbServiceUserImpl implements DBServiceUser {
 	private static final Logger logger = LoggerFactory.getLogger(DbServiceUserImpl.class);
 
 	private final UserDao userDao;
+	private final ObjectValidator<User> validator;
 
-	public DbServiceUserImpl(UserDao userDao) {
+	public DbServiceUserImpl(final UserDao userDao, final ObjectValidator<User> validator) {
 		this.userDao = userDao;
+		this.validator = validator;
 	}
 
 	@Override
 	public long saveUser(User user) {
+
+		if (!validator.isValid(user)) {
+			throw new DbServiceException("user fields is not valid!");
+		}
+
 		try (SessionManager sessionManager = userDao.getSessionManager()) {
 			sessionManager.beginSession();
 			try {

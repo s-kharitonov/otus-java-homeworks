@@ -4,4 +4,8 @@ public class DbServiceException extends RuntimeException {
 	public DbServiceException(Exception e) {
 		super(e);
 	}
+
+	public DbServiceException(String msg) {
+		super(msg);
+	}
 }

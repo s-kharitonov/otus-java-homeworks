@@ -2,6 +2,8 @@ package ru.otus.core.model;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity(name = "User")
 @Table(name = "users")
@@ -12,12 +14,18 @@ public class User {
 	@Column(name = "user_id")
 	private long id;
 
+	@NotNull
+	@Size(min = 1)
 	@Column(name = "name", nullable = false)
 	private String name;
 
+	@NotNull
+	@Size(min = 1)
 	@Column(name = "login", unique = true, nullable = false)
 	private String login;
 
+	@NotNull
+	@Size(min = 1)
 	@Column(name = "password", nullable = false)
 	private String password;
 
