@@ -10,6 +10,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import ru.otus.core.service.DBServiceUser;
 import ru.otus.helpers.FileSystemHelper;
 import ru.otus.services.TemplateProcessor;
+import ru.otus.servlet.AdminServlet;
 import ru.otus.servlet.UsersApiServlet;
 import ru.otus.servlet.UsersServlet;
 
@@ -54,7 +55,7 @@ public class UsersWebServerSimple implements UsersWebServer {
 
 		HandlerList handlers = new HandlerList();
 		handlers.addHandler(resourceHandler);
-		handlers.addHandler(applySecurity(servletContextHandler, "/users", "/api/user/*"));
+		handlers.addHandler(applySecurity(servletContextHandler, "/users", "/api/user/*", "/admin"));
 
 
 		server.setHandler(handlers);
@@ -76,6 +77,7 @@ public class UsersWebServerSimple implements UsersWebServer {
 	private ServletContextHandler createServletContextHandler() {
 		ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		servletContextHandler.addServlet(new ServletHolder(new UsersServlet(templateProcessor, userService)), "/users");
+		servletContextHandler.addServlet(new ServletHolder(new AdminServlet(templateProcessor, userService)), "/admin");
 		servletContextHandler.addServlet(new ServletHolder(new UsersApiServlet(userService, gson)), "/api/user/*");
 		return servletContextHandler;
 	}

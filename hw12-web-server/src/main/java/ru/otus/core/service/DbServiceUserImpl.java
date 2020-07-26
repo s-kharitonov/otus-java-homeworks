@@ -5,10 +5,12 @@ import org.slf4j.LoggerFactory;
 import ru.otus.core.dao.UserDao;
 import ru.otus.core.model.User;
 import ru.otus.core.sessionmanager.SessionManager;
+import ru.otus.domain.UserDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class DbServiceUserImpl implements DBServiceUser {
 	private static final Logger logger = LoggerFactory.getLogger(DbServiceUserImpl.class);
@@ -40,14 +42,15 @@ public class DbServiceUserImpl implements DBServiceUser {
 
 
 	@Override
-	public Optional<User> getUser(long id) {
+	public Optional<UserDTO> getUser(long id) {
 		try (SessionManager sessionManager = userDao.getSessionManager()) {
 			sessionManager.beginSession();
 			try {
 				Optional<User> userOptional = userDao.findById(id);
 
 				logger.info("user: {}", userOptional.orElse(null));
-				return userOptional;
+
+				return userOptional.map(UserDTO::new);
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 				sessionManager.rollbackSession();
@@ -57,14 +60,14 @@ public class DbServiceUserImpl implements DBServiceUser {
 	}
 
 	@Override
-	public Optional<User> getFirstUser() {
+	public Optional<UserDTO> getFirstUser() {
 		try (SessionManager sessionManager = userDao.getSessionManager()) {
 			sessionManager.beginSession();
 			try {
 				Optional<User> userOptional = userDao.findFirst();
 
 				logger.info("user: {}", userOptional.orElse(null));
-				return userOptional;
+				return userOptional.map(UserDTO::new);
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 				sessionManager.rollbackSession();
@@ -87,14 +90,16 @@ public class DbServiceUserImpl implements DBServiceUser {
 	}
 
 	@Override
-	public List<User> findAllUsers() {
+	public List<UserDTO> findAllUsers() {
 		try (SessionManager sessionManager = userDao.getSessionManager()) {
 			sessionManager.beginSession();
 			try {
-				List<User> users = userDao.findAllUsers();
+				final List<User> users = userDao.findAllUsers();
 
 				logger.info("users: {}", users);
-				return users;
+				return users.stream()
+						.map(UserDTO::new)
+						.collect(Collectors.toList());
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 				sessionManager.rollbackSession();
