@@ -21,10 +21,11 @@ public class Main {
 	private static final String TEMPLATES_DIR = "/templates/";
 	private static final String REALM_NAME = "AnyRealm";
 	private static final String HASH_LOGIN_SERVICE_CONFIG_NAME = "realm.properties";
+	private static final String HIBERNATE_CONFIG_NAME = "hibernate.cfg.xml";
 
 	public static void main(String[] args) throws Exception {
 		final var sessionFactory = HibernateUtils.buildSessionFactory(
-				"hibernate.cfg.xml",
+				HIBERNATE_CONFIG_NAME,
 				User.class
 		);
 		final var validator = Validation.byDefaultProvider()

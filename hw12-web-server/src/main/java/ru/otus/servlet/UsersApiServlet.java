@@ -47,7 +47,7 @@ public class UsersApiServlet extends HttpServlet {
 
         try {
             userService.saveUser(user);
-            resp.setStatus(200);
+            resp.setStatus(201);
         } catch (DbServiceException e) {
             resp.setStatus(400);
         }
