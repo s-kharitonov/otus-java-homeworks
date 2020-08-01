@@ -11,6 +11,7 @@ dependencies {
     testImplementation group: 'org.assertj', name: 'assertj-core'
     testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter'
 
+    implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'com.h2database:h2'
     implementation 'ch.qos.logback:logback-classic'
     implementation 'org.hibernate:hibernate-core'
