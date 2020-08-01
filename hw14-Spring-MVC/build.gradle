@@ -40,6 +40,6 @@ tasks.withType(JavaCompile) {
 }
 
 war {
-    archiveName 'app.war'
+    archiveName 'hw14-Spring-MVC.war'
     from 'src/main/resources'
 }
