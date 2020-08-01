@@ -1,5 +1,8 @@
 package ru.otus.services.impl;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -7,7 +10,6 @@ import ru.otus.cache.CacheKeeper;
 import ru.otus.dao.UserDAO;
 import ru.otus.domain.UserDTO;
 import ru.otus.domain.model.User;
-import ru.otus.hibernate.SessionManager;
 import ru.otus.listeners.Listener;
 import ru.otus.services.UserService;
 
@@ -21,11 +23,16 @@ public class UserServiceImpl implements UserService {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
+	private final SessionFactory sessionFactory;
 	private final UserDAO userDAO;
 	private final CacheKeeper<Long, User> cacheKeeper;
 	private final Listener<Long, User> listener;
 
-	public UserServiceImpl(final UserDAO userDAO, final CacheKeeper<Long, User> cacheKeeper, final Listener<Long, User> listener) {
+	public UserServiceImpl(final SessionFactory sessionFactory,
+						   final UserDAO userDAO,
+						   final CacheKeeper<Long, User> cacheKeeper,
+						   final Listener<Long, User> listener) {
+		this.sessionFactory = sessionFactory;
 		this.userDAO = userDAO;
 		this.cacheKeeper = cacheKeeper;
 		this.listener = listener;
@@ -35,23 +42,23 @@ public class UserServiceImpl implements UserService {
 	public Long saveUser(final User user) {
 		cacheKeeper.addListener(listener);
 
-		try (SessionManager sessionManager = userDAO.getSessionManager()) {
-			sessionManager.beginSession();
+		try (final Session session = sessionFactory.openSession()) {
+			final Transaction transaction = session.getTransaction();
+
 			try {
+				session.beginTransaction();
 				userDAO.insertUser(user);
 
-				final long userId = user.getId();
+				final Long userId = user.getId();
 
-				sessionManager.commitSession();
 				cacheKeeper.put(userId, user);
-				logger.info("created user: {}", userId);
+				transaction.commit();
 
+				logger.info("created user: {}", userId);
 				return userId;
 			} catch (Exception e) {
+				transaction.rollback();
 				logger.error(e.getMessage(), e);
-
-				sessionManager.rollbackSession();
-
 				return null;
 			}
 		} finally {
@@ -69,20 +76,23 @@ public class UserServiceImpl implements UserService {
 			return new UserDTO(user);
 		}
 
-		try (SessionManager sessionManager = userDAO.getSessionManager()) {
-
-			sessionManager.beginSession();
+		try (final Session session = sessionFactory.openSession()) {
+			final Transaction transaction = session.getTransaction();
 
 			try {
+				session.beginTransaction();
 				final Optional<User> userOptional = userDAO.findById(id);
 
 				logger.info("user: {}", userOptional.orElse(null));
 				userOptional.ifPresent(value -> cacheKeeper.put(id, value));
+				final UserDTO userDTO = userOptional.map(UserDTO::new).orElse(null);
 
-				return userOptional.map(UserDTO::new).orElse(null);
+				transaction.commit();
+
+				return userDTO;
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
-				sessionManager.rollbackSession();
+				transaction.rollback();
 			} finally {
 				cacheKeeper.removeListener(listener);
 			}
@@ -93,19 +103,22 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<UserDTO> getAll() {
-		try (SessionManager sessionManager = userDAO.getSessionManager()) {
-			sessionManager.beginSession();
+		try (final Session session = sessionFactory.openSession()) {
+			final Transaction transaction = session.getTransaction();
 			try {
+				session.beginTransaction();
 				final List<User> users = userDAO.findAll();
 
 				logger.info("users: {}", users);
-
-				return users.stream()
+				final List<UserDTO> usersDTO = users.stream()
 						.map(UserDTO::new)
 						.collect(Collectors.toList());
+
+				transaction.commit();
+				return usersDTO;
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
-				sessionManager.rollbackSession();
+				transaction.rollback();
 			}
 			return new ArrayList<>();
 		}
