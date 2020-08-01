@@ -5,6 +5,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.otus.cache.CacheKeeper;
 import ru.otus.dao.UserDAO;
@@ -12,6 +14,8 @@ import ru.otus.domain.UserDTO;
 import ru.otus.domain.model.User;
 import ru.otus.listeners.Listener;
 import ru.otus.services.UserService;
+import ru.otus.validators.ObjectValidator;
+import ru.otus.validators.impl.GenericValidator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +50,7 @@ public class UserServiceImpl implements UserService {
 			final Transaction transaction = session.getTransaction();
 
 			try {
-				session.beginTransaction();
+				transaction.begin();
 				userDAO.insertUser(user);
 
 				final Long userId = user.getId();
@@ -80,16 +84,15 @@ public class UserServiceImpl implements UserService {
 			final Transaction transaction = session.getTransaction();
 
 			try {
-				session.beginTransaction();
+				transaction.begin();
 				final Optional<User> userOptional = userDAO.findById(id);
 
 				logger.info("user: {}", userOptional.orElse(null));
 				userOptional.ifPresent(value -> cacheKeeper.put(id, value));
-				final UserDTO userDTO = userOptional.map(UserDTO::new).orElse(null);
 
 				transaction.commit();
 
-				return userDTO;
+				return userOptional.map(UserDTO::new).orElse(null);
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 				transaction.rollback();
@@ -102,25 +105,69 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<UserDTO> getAll() {
+	public List<UserDTO> getAllUsers() {
 		try (final Session session = sessionFactory.openSession()) {
 			final Transaction transaction = session.getTransaction();
 			try {
-				session.beginTransaction();
+				transaction.begin();
 				final List<User> users = userDAO.findAll();
 
 				logger.info("users: {}", users);
-				final List<UserDTO> usersDTO = users.stream()
-						.map(UserDTO::new)
-						.collect(Collectors.toList());
 
 				transaction.commit();
-				return usersDTO;
+
+				return users.stream()
+						.map(UserDTO::new)
+						.collect(Collectors.toList());
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 				transaction.rollback();
 			}
 			return new ArrayList<>();
+		}
+	}
+
+	@Override
+	public ResponseEntity<?> saveUserForResponse(final UserDTO user) {
+		final ObjectValidator<UserDTO> validator = new GenericValidator<>();
+
+		if (!validator.isValid(user)) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
+		final User userEntity = new User(
+				user.getName(),
+				user.getLogin(),
+				user.getPassword()
+		);
+		final Long userId = saveUser(userEntity);
+
+		if (userId == null) {
+			return new ResponseEntity<>("user creation error!", HttpStatus.INTERNAL_SERVER_ERROR);
+		} else {
+			return new ResponseEntity<>(userId, HttpStatus.OK);
+		}
+	}
+
+	@Override
+	public ResponseEntity<?> getUserForResponse(final long id) {
+		final UserDTO user = getUser(id);
+
+		if (user == null) {
+			return new ResponseEntity<>("user not found!", HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(user, HttpStatus.OK);
+		}
+	}
+
+	@Override
+	public ResponseEntity<?> getAllForResponse() {
+		final List<UserDTO> users = getAllUsers();
+
+		if (users.isEmpty()) {
+			return new ResponseEntity<>("users not found!", HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(users, HttpStatus.OK);
 		}
 	}
 }

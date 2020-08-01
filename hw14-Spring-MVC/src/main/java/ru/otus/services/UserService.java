@@ -1,5 +1,6 @@
 package ru.otus.services;
 
+import org.springframework.http.ResponseEntity;
 import ru.otus.domain.UserDTO;
 import ru.otus.domain.model.User;
 
@@ -10,5 +11,11 @@ public interface UserService {
 
 	UserDTO getUser(long id);
 
-	List<UserDTO> getAll();
+	List<UserDTO> getAllUsers();
+
+	ResponseEntity<?> saveUserForResponse(UserDTO user);
+
+	ResponseEntity<?> getUserForResponse(long id);
+
+	ResponseEntity<?> getAllForResponse();
 }

@@ -2,10 +2,22 @@ package ru.otus.domain;
 
 import ru.otus.domain.model.User;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 public class UserDTO {
 	private final long id;
+
+	@NotNull
+	@Size(min = 1)
 	private final String name;
+
+	@NotNull
+	@Size(min = 1)
 	private final String login;
+
+	@NotNull
+	@Size(min = 1)
 	private final String password;
 
 	public UserDTO(final User user) {
