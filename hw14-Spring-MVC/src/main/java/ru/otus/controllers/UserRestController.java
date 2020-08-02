@@ -14,17 +14,17 @@ public class UserRestController {
 		this.userService = userService;
 	}
 
-	@PostMapping("/user")
+	@PostMapping(value = "/user")
 	public ResponseEntity<?> saveUser(@RequestBody UserDTO user) {
 		return userService.saveUserForResponse(user);
 	}
 
-	@GetMapping("/user/{id}")
+	@GetMapping(value = "/user/{id}")
 	public ResponseEntity<?> getUser(@PathVariable long id) {
 		return userService.getUserForResponse(id);
 	}
 
-	@GetMapping("/user")
+	@GetMapping(value = "/user")
 	public ResponseEntity<?> getUsers() {
 		return userService.getAllForResponse();
 	}

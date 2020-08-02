@@ -20,7 +20,7 @@ public class HibernateConfiguration {
 		final LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 
 		sessionFactory.setDataSource(dataSource());
-		sessionFactory.setPackagesToScan("ru.otus.domain.model");
+		sessionFactory.setPackagesToScan("ru.otus");
 		sessionFactory.setHibernateProperties(hibernateProperties());
 
 		return sessionFactory;

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.cache.CacheKeeper;
 import ru.otus.dao.UserDAO;
 import ru.otus.domain.UserDTO;
@@ -43,14 +44,14 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional
 	public Long saveUser(final User user) {
 		cacheKeeper.addListener(listener);
 
 		try (final Session session = sessionFactory.openSession()) {
-			final Transaction transaction = session.getTransaction();
+			final Transaction transaction = session.beginTransaction();
 
 			try {
-				transaction.begin();
 				userDAO.insertUser(user);
 
 				final Long userId = user.getId();
@@ -71,6 +72,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional
 	public UserDTO getUser(final long id) {
 		cacheKeeper.addListener(listener);
 
@@ -81,10 +83,9 @@ public class UserServiceImpl implements UserService {
 		}
 
 		try (final Session session = sessionFactory.openSession()) {
-			final Transaction transaction = session.getTransaction();
+			final Transaction transaction = session.beginTransaction();
 
 			try {
-				transaction.begin();
 				final Optional<User> userOptional = userDAO.findById(id);
 
 				logger.info("user: {}", userOptional.orElse(null));
@@ -105,11 +106,12 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional
 	public List<UserDTO> getAllUsers() {
 		try (final Session session = sessionFactory.openSession()) {
-			final Transaction transaction = session.getTransaction();
+			final Transaction transaction = session.beginTransaction();
+
 			try {
-				transaction.begin();
 				final List<User> users = userDAO.findAll();
 
 				logger.info("users: {}", users);
@@ -128,6 +130,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional
 	public ResponseEntity<?> saveUserForResponse(final UserDTO user) {
 		final ObjectValidator<UserDTO> validator = new GenericValidator<>();
 
@@ -150,6 +153,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional
 	public ResponseEntity<?> getUserForResponse(final long id) {
 		final UserDTO user = getUser(id);
 
@@ -161,6 +165,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional
 	public ResponseEntity<?> getAllForResponse() {
 		final List<UserDTO> users = getAllUsers();
 
