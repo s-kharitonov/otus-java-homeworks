@@ -2,7 +2,6 @@ package ru.otus.cache.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import ru.otus.cache.CacheKeeper;
 import ru.otus.listeners.Listener;
 
@@ -11,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-@Component
 public class BasicCacheKeeper<K, V> implements CacheKeeper<K, V> {
 
 	private static final Logger logger = LoggerFactory.getLogger(BasicCacheKeeper.class);

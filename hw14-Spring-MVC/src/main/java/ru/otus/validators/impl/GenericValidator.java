@@ -1,13 +1,11 @@
 package ru.otus.validators.impl;
 
 import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
-import org.springframework.stereotype.Component;
 import ru.otus.validators.ObjectValidator;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-@Component
 public class GenericValidator<T> implements ObjectValidator<T> {
 
 	private final Validator validator = Validation.byDefaultProvider()

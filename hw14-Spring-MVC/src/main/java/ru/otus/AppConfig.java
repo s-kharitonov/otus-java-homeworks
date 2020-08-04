@@ -11,6 +11,11 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
+import ru.otus.cache.CacheKeeper;
+import ru.otus.cache.impl.BasicCacheKeeper;
+import ru.otus.domain.model.User;
+import ru.otus.listeners.Listener;
+import ru.otus.listeners.impl.LogEventListener;
 
 import java.nio.charset.StandardCharsets;
 
@@ -57,6 +62,16 @@ public class AppConfig implements WebMvcConfigurer {
 		viewResolver.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
 		return viewResolver;
+	}
+
+	@Bean
+	public CacheKeeper<Long, User> userCacheKeeper() {
+		return new BasicCacheKeeper<>();
+	}
+
+	@Bean
+	public Listener<Long, User> userEventListener() {
+		return new LogEventListener<>();
 	}
 
 	@Override
