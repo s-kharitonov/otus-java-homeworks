@@ -9,11 +9,13 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
           integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
           crossorigin="anonymous">
-    <script>
+    <script th:inline="javascript">
+      const path = /*[[${#httpServletRequest.requestURI}]]*/ '/';
+
       async function getUsers() {
         const responseContainer = document.getElementById('responseUsers');
 
-        let response = await fetch('/user', {
+        let response = await fetch(path + 'user', {
           method: 'GET'
         });
 
@@ -30,7 +32,7 @@
         const id = document.getElementById('id').value,
           responseContainer = document.getElementById('responseId');
 
-        let response = await fetch('/user/' + id, {
+        let response = await fetch(path+'user/' + id, {
           method: 'GET'
         });
 
@@ -48,7 +50,7 @@
           login = document.getElementById('login').value,
           password = document.getElementById('password').value;
 
-        let response = await fetch('/user', {
+        let response = await fetch(path+ 'user', {
           method: 'POST',
           body: JSON.stringify({
             name: name,
@@ -61,7 +63,7 @@
         });
 
         if (response.ok) {
-          window.location = '/users';
+          window.location = path;
         } else {
           alert('Invalid user!');
         }

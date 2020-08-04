@@ -17,7 +17,7 @@ public class UserNavigationController {
 		this.userService = userService;
 	}
 
-	@GetMapping(path = {"/", "/users"})
+	@GetMapping(path = "/")
 	public String getUsersPage(Model model) {
 		final List<UserDTO> users = userService.getAllUsers();
 
