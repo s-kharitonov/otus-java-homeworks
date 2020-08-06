@@ -1,0 +1,54 @@
+plugins {
+    id 'war'
+}
+
+sourceCompatibility = JavaVersion.VERSION_13
+targetCompatibility = JavaVersion.VERSION_13
+
+dependencies {
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params'
+    testImplementation group: 'org.assertj', name: 'assertj-core'
+    testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter'
+
+    implementation 'com.h2database:h2'
+
+    implementation 'org.hibernate.validator:hibernate-validator'
+
+    implementation 'ch.qos.logback:logback-classic'
+
+    implementation 'org.springframework:spring-context'
+    implementation 'org.springframework:spring-webmvc'
+    implementation 'org.springframework:spring-web'
+
+    implementation 'org.thymeleaf:thymeleaf'
+    implementation 'org.thymeleaf:thymeleaf-spring5'
+
+    implementation 'org.hibernate:hibernate-core'
+    implementation 'org.apache.commons:commons-dbcp2'
+    implementation 'org.springframework:spring-orm'
+
+    implementation 'com.google.code.gson:gson'
+
+    providedCompile("javax.servlet:javax.servlet-api")
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.with {
+        encoding = 'UTF-8'
+    }
+}
+
+war {
+    archiveName 'hw14-Spring-MVC.war'
+    from 'src/main/resources'
+}

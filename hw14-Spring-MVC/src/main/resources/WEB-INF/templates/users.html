@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Users</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+          crossorigin="anonymous">
+    <script th:inline="javascript">
+      const path = /*[[${#httpServletRequest.requestURI}]]*/ '/';
+
+      async function getUsers() {
+        const responseContainer = document.getElementById('responseUsers');
+
+        let response = await fetch(path + 'user', {
+          method: 'GET'
+        });
+
+        if (response.ok) {
+          response.json().then((user) => {
+            responseContainer.innerText = JSON.stringify(user);
+          });
+        } else {
+          alert('users not found!');
+        }
+      }
+
+      async function getUserById() {
+        const id = document.getElementById('id').value,
+          responseContainer = document.getElementById('responseId');
+
+        let response = await fetch(path+'user/' + id, {
+          method: 'GET'
+        });
+
+        if (response.ok) {
+          response.json().then((user) => {
+            responseContainer.innerText = JSON.stringify(user);
+          });
+        } else {
+          alert('user not found!');
+        }
+      }
+
+      async function saveUser() {
+        const name = document.getElementById('name').value,
+          login = document.getElementById('login').value,
+          password = document.getElementById('password').value;
+
+        let response = await fetch(path+ 'user', {
+          method: 'POST',
+          body: JSON.stringify({
+            name: name,
+            login: login,
+            password: password
+          }),
+          headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+          }
+        });
+
+        if (response.ok) {
+          window.location = path;
+        } else {
+          alert('Invalid user!');
+        }
+      }
+    </script>
+</head>
+<body style="padding: 50px">
+<main>
+    <section>
+        <h6>Get users:</h6>
+        <button onclick="getUsers()" type="submit" class="btn btn-primary">Submit</button>
+        <div id="responseUsers"></div>
+    </section>
+    <section>
+        <h6>Get user by id:</h6>
+        <input type="text" id="id" placeholder="Введите id пользователя">
+        <button onclick="getUserById()" type="submit" class="btn btn-primary">Submit</button>
+        <div id="responseId"></div>
+    </section>
+    <section>
+        <h6>Create user:</h6>
+        <input type="text" id="name" placeholder="Введите имя пользователя">
+        <input type="text" id="login" placeholder="Введите логин пользователя">
+        <input type="text" id="password" placeholder="Введите пароль пользователя">
+        <button onclick="saveUser()" type="submit" class="btn btn-primary">Submit</button>
+    </section>
+    <table style="max-width: 800px; margin: 20px 0" class="table table-striped table-hover">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Name</th>
+            <th scope="col">Login</th>
+            <th scope="col">Password</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!--/*@thymesVar id="users" type="ru.otus.domain.UserDTO"*/-->
+        <tr th:each="user : ${users}">
+            <td scope="row" th:text="${user.id}"></td>
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.login}"></td>
+            <td th:text="${user.password}"></td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>
