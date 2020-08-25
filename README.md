@@ -19,3 +19,4 @@ student : Sergey Kharitonov
 |[hw12-web-server](https://github.com/skharitonov95/otus-homeworks/tree/master/hw12-web-server)|Цель: Научиться создавать серверный и пользовательский http-интерфейсы. Научиться встраивать web-сервер в уже готовое приложение.|
 |[hw13-IoC-container](https://github.com/skharitonov95/otus-homeworks/tree/master/hw13-IoC-container)|Цель: В процессе создания своего контекста понять как работает основная часть Spring framework.|
 |[hw14-Spring-MVC](https://github.com/skharitonov95/otus-homeworks/tree/master/hw14-Spring-MVC)|Цель: Научиться создавать war-пакеты и запускать их в TomCat. Научиться пользоваться Thymeleaf.|
+|[hw15-sequence-of-numbers](https://github.com/skharitonov95/otus-homeworks/tree/master/hw15-sequence-of-numbers)|Цель: Освоить базовые механизмы синхронизации.|
